@@ -10,22 +10,15 @@ export function getConsent(): ConsentState | null {
   if (typeof document === 'undefined') return null
 
   const cookies = document.cookie
-  console.log('[cookie-consent] raw cookies:', cookies)
   const match = cookies
     .split('; ')
     .find((row) => row.startsWith(`${CONSENT_COOKIE}=`))
 
-  if (!match) {
-    console.log('[cookie-consent] No amboras_consent cookie found')
-    return null
-  }
+  if (!match) return null
 
   try {
-    const parsed = JSON.parse(decodeURIComponent(match.split('=').slice(1).join('=')))
-    console.log('[cookie-consent] Parsed consent:', parsed)
-    return parsed
+    return JSON.parse(decodeURIComponent(match.split('=').slice(1).join('=')))
   } catch {
-    console.log('[cookie-consent] Failed to parse consent cookie')
     return null
   }
 }
