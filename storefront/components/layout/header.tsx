@@ -2,11 +2,18 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
-import { Search, ShoppingBag, User, Menu, X, LogIn } from 'lucide-react'
+import { Search, ShoppingBag, User, Menu, X, LogIn, Sparkles } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 import { useCart } from '@/hooks/use-cart'
 import { useAuth } from '@/hooks/use-auth'
 import CartDrawer from '@/components/cart/cart-drawer'
 import { useCollections } from '@/hooks/use-collections'
+
+const navLinks = [
+  { label: 'All Rituals', href: '/products' },
+  { label: 'Collections', href: '/collections' },
+  { label: 'Our Story', href: '/about' },
+]
 
 export default function Header() {
   const { itemCount } = useCart()
@@ -20,19 +27,15 @@ export default function Header() {
   const mobileMenuCloseRef = useRef<HTMLButtonElement>(null)
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 10)
+    const handleScroll = () => setIsScrolled(window.scrollY > 20)
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [])
 
-  // Focus close button when mobile menu opens
   useEffect(() => {
-    if (isMobileMenuOpen) {
-      mobileMenuCloseRef.current?.focus()
-    }
+    if (isMobileMenuOpen) mobileMenuCloseRef.current?.focus()
   }, [isMobileMenuOpen])
 
-  // Close mobile menu on Escape
   useEffect(() => {
     if (!isMobileMenuOpen) return
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -42,7 +45,6 @@ export default function Header() {
     return () => document.removeEventListener('keydown', handleKeyDown)
   }, [isMobileMenuOpen])
 
-  // Focus trap for mobile menu
   const handleMobileMenuKeyDown = useCallback((e: React.KeyboardEvent) => {
     if (e.key !== 'Tab' || !mobileMenuRef.current) return
     const focusable = mobileMenuRef.current.querySelectorAll<HTMLElement>(
@@ -52,54 +54,84 @@ export default function Header() {
     const first = focusable[0]
     const last = focusable[focusable.length - 1]
     if (e.shiftKey && document.activeElement === first) {
-      e.preventDefault()
-      last.focus()
+      e.preventDefault(); last.focus()
     } else if (!e.shiftKey && document.activeElement === last) {
-      e.preventDefault()
-      first.focus()
+      e.preventDefault(); first.focus()
     }
   }, [])
 
   return (
     <>
       <header
-        className={`sticky top-0 z-40 w-full transition-all duration-300 ${
+        className={`sticky top-0 z-40 w-full transition-all duration-500 ${
           isScrolled
-            ? 'bg-background/95 backdrop-blur-md border-b shadow-sm'
-            : 'bg-background border-b'
+            ? 'border-b border-gold-DEFAULT/10'
+            : 'border-b border-white/5'
         }`}
+        style={{
+          background: isScrolled
+            ? 'rgba(10,10,10,0.95)'
+            : 'rgba(10,10,10,0.7)',
+          backdropFilter: 'blur(20px)',
+        }}
       >
+        {/* Top gold accent line */}
+        <div className="h-px w-full" style={{ background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.5), rgba(0,229,192,0.3), transparent)' }} />
+
         <div className="container-custom">
           <div className="flex h-16 items-center justify-between gap-4">
             {/* Mobile menu toggle */}
             <button
               onClick={() => setIsMobileMenuOpen(true)}
-              className="p-2 -ml-2 lg:hidden hover:opacity-70 transition-opacity"
+              className="p-2 -ml-2 lg:hidden text-white/70 hover:text-white transition-colors"
               aria-label="Open menu"
             >
               <Menu className="h-5 w-5" />
             </button>
 
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2">
-              <span className="font-heading text-2xl font-semibold tracking-tight">
-                Store
-              </span>
+            <Link href="/" className="flex items-center gap-2.5 group">
+              <div className="w-7 h-7 rounded-sm flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:shadow-gold-sm"
+                style={{
+                  background: 'linear-gradient(135deg, #D4AF37, #9A7E28)',
+                }}>
+                <Sparkles className="h-3.5 w-3.5 text-noir-black" />
+              </div>
+              <div className="flex flex-col leading-none">
+                <span className="font-heading text-lg font-black tracking-tight text-white">
+                  VELOUR
+                </span>
+                <span className="text-[9px] tracking-[0.3em] uppercase font-semibold -mt-0.5"
+                  style={{ color: '#D4AF37' }}>
+                  NOIRE
+                </span>
+              </div>
             </Link>
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-8">
-              <Link href="/products" className="text-sm tracking-wide uppercase link-underline py-1" prefetch={true}>
-                Shop All
-              </Link>
-              {collections?.slice(0, 4).map((collection: any) => (
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="text-xs tracking-widest uppercase font-semibold text-white/60 hover:text-white transition-colors duration-300 relative group"
+                  prefetch={true}
+                >
+                  {link.label}
+                  <span className="absolute -bottom-0.5 left-0 h-px w-0 group-hover:w-full transition-all duration-400"
+                    style={{ background: 'linear-gradient(90deg, #D4AF37, #00E5C0)' }} />
+                </Link>
+              ))}
+              {collections?.slice(0, 2).map((collection: any) => (
                 <Link
                   key={collection.id}
                   href={`/collections/${collection.handle}`}
-                  className="text-sm tracking-wide uppercase link-underline py-1"
+                  className="text-xs tracking-widest uppercase font-semibold text-white/60 hover:text-white transition-colors duration-300 relative group"
                   prefetch={true}
                 >
                   {collection.title}
+                  <span className="absolute -bottom-0.5 left-0 h-px w-0 group-hover:w-full transition-all duration-400"
+                    style={{ background: 'linear-gradient(90deg, #D4AF37, #00E5C0)' }} />
                 </Link>
               ))}
             </nav>
@@ -108,29 +140,41 @@ export default function Header() {
             <div className="flex items-center gap-1">
               <Link
                 href="/search"
-                className="p-2.5 hover:opacity-70 transition-opacity"
+                className="p-2.5 text-white/60 hover:text-white transition-colors"
                 aria-label="Search"
               >
-                <Search className="h-5 w-5" />
+                <Search className="h-4.5 w-4.5" strokeWidth={1.5} />
               </Link>
               <Link
                 href={isLoggedIn ? '/account' : '/auth/login'}
-                className="p-2.5 hover:opacity-70 transition-opacity hidden sm:block"
+                className="p-2.5 text-white/60 hover:text-white transition-colors hidden sm:block"
                 aria-label={isLoggedIn ? 'Account' : 'Sign in'}
               >
-                {isLoggedIn ? <User className="h-5 w-5" /> : <LogIn className="h-5 w-5" />}
+                {isLoggedIn ? (
+                  <User className="h-4.5 w-4.5" strokeWidth={1.5} />
+                ) : (
+                  <LogIn className="h-4.5 w-4.5" strokeWidth={1.5} />
+                )}
               </Link>
               <button
                 onClick={() => setIsCartOpen(true)}
-                className="relative p-2.5 hover:opacity-70 transition-opacity"
+                className="relative p-2.5 text-white/60 hover:text-white transition-colors ml-1"
                 aria-label="Shopping bag"
               >
-                <ShoppingBag className="h-5 w-5" />
-                {itemCount > 0 && (
-                  <span className="absolute top-0.5 right-0.5 flex h-4 w-4 items-center justify-center rounded-full bg-foreground text-[10px] font-bold text-background">
-                    {itemCount}
-                  </span>
-                )}
+                <ShoppingBag className="h-4.5 w-4.5" strokeWidth={1.5} />
+                <AnimatePresence>
+                  {itemCount > 0 && (
+                    <motion.span
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 1 }}
+                      exit={{ scale: 0 }}
+                      className="absolute -top-0.5 -right-0.5 flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold text-noir-black"
+                      style={{ background: 'linear-gradient(135deg, #D4AF37, #9A7E28)' }}
+                    >
+                      {itemCount}
+                    </motion.span>
+                  )}
+                </AnimatePresence>
               </button>
             </div>
           </div>
@@ -138,74 +182,128 @@ export default function Header() {
       </header>
 
       {/* Mobile Menu */}
-      {isMobileMenuOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden">
-          <div
-            className="absolute inset-0 bg-black/40"
-            onClick={() => setIsMobileMenuOpen(false)}
-          />
-          <div
-            ref={mobileMenuRef}
-            role="dialog"
-            aria-modal="true"
-            aria-label="Navigation menu"
-            onKeyDown={handleMobileMenuKeyDown}
-            className="absolute inset-y-0 left-0 w-80 max-w-[85vw] bg-background animate-slide-in-right"
-          >
-            <div className="flex items-center justify-between p-4 border-b">
-              <span className="font-heading text-xl font-semibold">Menu</span>
-              <button
-                ref={mobileMenuCloseRef}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="p-2 hover:opacity-70"
-                aria-label="Close menu"
-              >
-                <X className="h-5 w-5" />
-              </button>
-            </div>
-            <nav className="p-4 space-y-1">
-              <Link
-                href="/products"
-                onClick={() => setIsMobileMenuOpen(false)}
-                className="block py-3 text-lg tracking-wide border-b border-border/50"
-                prefetch={true}
-              >
-                Shop All
-              </Link>
-              {collections?.map((collection: any) => (
-                <Link
-                  key={collection.id}
-                  href={`/collections/${collection.handle}`}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="block py-3 text-lg tracking-wide border-b border-border/50"
-                  prefetch={true}
-                >
-                  {collection.title}
-                </Link>
-              ))}
-              <div className="pt-4 space-y-1">
-                <Link
-                  href={isLoggedIn ? '/account' : '/auth/login'}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="block py-3 text-muted-foreground"
-                >
-                  {isLoggedIn ? 'Account' : 'Sign In'}
-                </Link>
-                <Link
-                  href="/search"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="block py-3 text-muted-foreground"
-                >
-                  Search
-                </Link>
-              </div>
-            </nav>
-          </div>
-        </div>
-      )}
+      <AnimatePresence>
+        {isMobileMenuOpen && (
+          <div className="fixed inset-0 z-50 lg:hidden">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
+            <motion.div
+              ref={mobileMenuRef}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Navigation menu"
+              onKeyDown={handleMobileMenuKeyDown}
+              initial={{ x: '-100%' }}
+              animate={{ x: 0 }}
+              exit={{ x: '-100%' }}
+              transition={{ type: 'spring', damping: 30, stiffness: 300 }}
+              className="absolute inset-y-0 left-0 w-80 max-w-[85vw]"
+              style={{
+                background: 'linear-gradient(135deg, #111111, #1A1018)',
+                borderRight: '1px solid rgba(212,175,55,0.15)',
+              }}
+            >
+              {/* Gold top line */}
+              <div className="h-px w-full" style={{ background: 'linear-gradient(90deg, transparent, #D4AF37, transparent)' }} />
 
-      {/* Cart Drawer */}
+              <div className="flex items-center justify-between p-5 border-b border-white/5">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-6 h-6 rounded-sm flex items-center justify-center"
+                    style={{ background: 'linear-gradient(135deg, #D4AF37, #9A7E28)' }}>
+                    <Sparkles className="h-3 w-3 text-noir-black" />
+                  </div>
+                  <span className="font-heading text-base font-black text-white tracking-tight">VELOUR NOIRE</span>
+                </div>
+                <button
+                  ref={mobileMenuCloseRef}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="p-2 text-white/50 hover:text-white transition-colors"
+                  aria-label="Close menu"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              <nav className="p-5 space-y-1">
+                {navLinks.map((link, i) => (
+                  <motion.div
+                    key={link.href}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.05 + 0.1 }}
+                  >
+                    <Link
+                      href={link.href}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center justify-between py-3.5 text-sm font-semibold tracking-widest uppercase text-white/70 hover:text-white border-b border-white/5 transition-colors"
+                      prefetch={true}
+                    >
+                      {link.label}
+                      <ArrowRightSmall />
+                    </Link>
+                  </motion.div>
+                ))}
+                {collections?.map((collection: any, i: number) => (
+                  <motion.div
+                    key={collection.id}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: (navLinks.length + i) * 0.05 + 0.1 }}
+                  >
+                    <Link
+                      href={`/collections/${collection.handle}`}
+                      onClick={() => setIsMobileMenuOpen(false)}
+                      className="flex items-center justify-between py-3.5 text-sm font-semibold tracking-widest uppercase text-white/70 hover:text-white border-b border-white/5 transition-colors"
+                      prefetch={true}
+                    >
+                      {collection.title}
+                      <ArrowRightSmall />
+                    </Link>
+                  </motion.div>
+                ))}
+
+                <div className="pt-6 space-y-2">
+                  <Link
+                    href={isLoggedIn ? '/account' : '/auth/login'}
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="block py-2.5 text-sm text-white/40 hover:text-white/70 transition-colors"
+                  >
+                    {isLoggedIn ? '→ My Account' : '→ Sign In'}
+                  </Link>
+                  <Link
+                    href="/search"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="block py-2.5 text-sm text-white/40 hover:text-white/70 transition-colors"
+                  >
+                    → Search Rituals
+                  </Link>
+                </div>
+              </nav>
+
+              {/* Bottom branding */}
+              <div className="absolute bottom-6 left-5 right-5">
+                <div className="h-px w-full mb-4" style={{ background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.3), transparent)' }} />
+                <p className="text-xs text-white/20 tracking-widest text-center">LUXURY DARK RITUAL CARE</p>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
       <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
     </>
+  )
+}
+
+function ArrowRightSmall() {
+  return (
+    <svg className="h-3 w-3 text-gold-DEFAULT/50" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+      <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+    </svg>
   )
 }

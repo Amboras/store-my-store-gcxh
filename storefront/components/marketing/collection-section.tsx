@@ -2,6 +2,7 @@
 
 import Link from 'next/link'
 import { ArrowRight } from 'lucide-react'
+import { motion } from 'framer-motion'
 import ProductGrid from '@/components/product/product-grid'
 
 interface CollectionSectionProps {
@@ -14,29 +15,38 @@ export default function CollectionSection({ collection, alternate }: CollectionS
   const hasDescription = typeof description === 'string' && description
 
   return (
-    <section className={`py-section ${alternate ? 'bg-muted/30' : ''}`}>
+    <section className="py-12 relative">
       <div className="container-custom">
-        <div className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-10">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.7 }}
+          className="flex flex-col sm:flex-row items-start sm:items-end justify-between gap-4 mb-10"
+        >
           <div>
-            <p className="text-sm uppercase tracking-[0.2em] text-muted-foreground mb-2">
-              Collection
-            </p>
-            <h2 className="text-h2 font-heading font-semibold">
+            <span className="text-xs tracking-luxury uppercase font-semibold mb-2 block"
+              style={{ color: alternate ? '#00E5C0' : '#D4AF37' }}>
+              ✦ Collection
+            </span>
+            <h2 className="font-heading text-h3 md:text-h2 font-bold text-white">
               {collection.title}
             </h2>
             {hasDescription && (
-              <p className="text-muted-foreground mt-2 max-w-lg">{description}</p>
+              <p className="text-white/40 mt-2 max-w-lg text-sm leading-relaxed">{description}</p>
             )}
           </div>
           <Link
             href={`/collections/${collection.handle}`}
-            className="inline-flex items-center gap-2 text-sm font-semibold uppercase tracking-wide link-underline pb-0.5 whitespace-nowrap"
+            className="inline-flex items-center gap-2 text-xs font-bold tracking-widest uppercase transition-all duration-300 group whitespace-nowrap"
+            style={{ color: alternate ? '#00E5C0' : '#D4AF37' }}
             prefetch={true}
           >
             View All
-            <ArrowRight className="h-4 w-4" />
+            <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
           </Link>
-        </div>
+        </motion.div>
+
         <ProductGrid collectionId={collection.id} limit={4} />
       </div>
     </section>

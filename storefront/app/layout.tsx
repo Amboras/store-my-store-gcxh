@@ -1,6 +1,6 @@
 import './globals.css'
 import type { Metadata } from 'next'
-import { Lato, Inter } from 'next/font/google'
+import { Playfair_Display, Jost } from 'next/font/google'
 import { Providers } from './providers'
 import Header from '@/components/layout/header'
 import Footer from '@/components/layout/footer'
@@ -14,26 +14,36 @@ import dynamic from 'next/dynamic'
 
 const CookieConsent = dynamic(() => import('@/components/cookie-consent'))
 
-const heading = Lato({
+// Playfair Display — cinematic editorial serif for headings
+const heading = Playfair_Display({
   subsets: ['latin'],
-  weight: ['400', '700'],
+  weight: ['400', '500', '600', '700', '800', '900'],
+  style: ['normal', 'italic'],
   variable: '--font-heading',
   display: 'swap',
 })
 
-const body = Inter({
+// Jost — sleek geometric sans for body
+const body = Jost({
   subsets: ['latin'],
-  weight: ['400', '500', '600'],
+  weight: ['300', '400', '500', '600'],
   variable: '--font-body',
   display: 'swap',
 })
 
 export const metadata: Metadata = {
   title: {
-    default: 'Store — Modern Commerce',
-    template: '%s | Store',
+    default: 'Velour Noire — Luxury Glow-Up Rituals',
+    template: '%s | Velour Noire',
   },
-  description: 'Discover curated products crafted with care. A modern ecommerce experience.',
+  description:
+    'Velour Noire — Premium dark luxury personal care and grooming for the modern model. LED face masks, gua sha, sea salt scrubs, rosemary growth oils and more.',
+  keywords: ['luxury skincare', 'LED face mask', 'gua sha', 'grooming', 'self care', 'glow up', 'velour noire'],
+  openGraph: {
+    title: 'Velour Noire — Luxury Glow-Up Rituals',
+    description: 'Premium dark luxury personal care and grooming essentials for men and women.',
+    siteName: 'Velour Noire',
+  },
 }
 
 export default function RootLayout({
@@ -42,11 +52,8 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en" className={`${heading.variable} ${body.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${heading.variable} ${body.variable} dark`} suppressHydrationWarning>
       <head>
-        {/* PostHog cross-origin iframe recording shim — records DOM via rrweb and forwards
-            events to the parent window (admin dashboard) for session replay.
-            Uses rrweb@2.0.0-alpha.20 (same version proven in ecomcoder production). */}
         <script dangerouslySetInnerHTML={{ __html: `
 (function() {
   'use strict';
@@ -76,7 +83,7 @@ export default function RootLayout({
 })();
         `}} />
       </head>
-      <body>
+      <body className="bg-noir-black">
         <Providers>
           <ElementPickerListener />
           <AnnouncementBar />
@@ -92,7 +99,16 @@ export default function RootLayout({
           </main>
           <Footer />
           <CookieConsent />
-          <Toaster position="bottom-right" richColors />
+          <Toaster
+            position="bottom-right"
+            toastOptions={{
+              style: {
+                background: '#161616',
+                border: '1px solid rgba(212,175,55,0.3)',
+                color: '#fff',
+              },
+            }}
+          />
         </Providers>
       </body>
     </html>

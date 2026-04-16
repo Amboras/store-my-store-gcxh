@@ -4,37 +4,30 @@
 
 @layer base {
   :root {
-    --background: 40 20% 98%;
-    --foreground: 0 0% 10%;
-    --muted: 40 10% 94%;
-    --muted-foreground: 0 0% 45%;
-    --accent: 35 40% 50%;
-    --accent-foreground: 0 0% 100%;
-    --border: 40 10% 88%;
-    --ring: 35 40% 50%;
-    --primary: 0 0% 10%;
-    --primary-foreground: 0 0% 98%;
+    /* Velour Noire — Dark Luxury Variables */
+    --background: 0 0% 4%;          /* #0A0A0A deep black */
+    --foreground: 0 0% 96%;         /* near-white */
+    --muted: 0 0% 9%;               /* #161616 card bg */
+    --muted-foreground: 0 0% 55%;   /* secondary text */
+    --accent: 168 100% 45%;         /* #00E5C0 neon cyan */
+    --accent-foreground: 0 0% 4%;
+    --border: 0 0% 16%;             /* #2A2A2A subtle border */
+    --ring: 168 100% 45%;
+    --primary: 42 65% 52%;          /* #D4AF37 gold */
+    --primary-foreground: 0 0% 4%;
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 98%;
 
-    /* Brand colors (dynamically injected from Store.metadata.brand) */
-    /* Access in CSS: var(--brand-primary), var(--brand-secondary) */
-    /* Managed by BrandStyleInjector component */
+    /* Brand tokens */
+    --brand-primary: #D4AF37;
+    --brand-secondary: #00E5C0;
+    --brand-burgundy: #4A1C2F;
+    --brand-black: #0A0A0A;
   }
 
-  .dark {
-    --background: 0 0% 6%;
-    --foreground: 40 20% 94%;
-    --muted: 0 0% 12%;
-    --muted-foreground: 0 0% 55%;
-    --accent: 35 45% 55%;
-    --accent-foreground: 0 0% 100%;
-    --border: 0 0% 16%;
-    --ring: 35 45% 55%;
-    --primary: 40 20% 94%;
-    --primary-foreground: 0 0% 6%;
-    --destructive: 0 72% 51%;
-    --destructive-foreground: 0 0% 98%;
+  /* Force dark mode always for Velour Noire */
+  html {
+    color-scheme: dark;
   }
 }
 
@@ -44,7 +37,9 @@
   }
 
   body {
-    @apply bg-background text-foreground font-body antialiased;
+    @apply bg-noir-black text-foreground font-body antialiased;
+    background-color: #0A0A0A;
+    overflow-x: hidden;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -61,44 +56,186 @@
     text-wrap: balance;
   }
 
+  /* Gold gradient text */
+  .text-gold-gradient {
+    background: linear-gradient(135deg, #D4AF37 0%, #F5E6A3 40%, #9A7E28 70%, #D4AF37 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: text-shimmer 4s linear infinite;
+  }
+
+  /* Cyan gradient text */
+  .text-cyan-gradient {
+    background: linear-gradient(135deg, #00E5C0 0%, #80F5E0 40%, #007A6B 70%, #00E5C0 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* Velvet texture overlay */
+  .velvet-overlay {
+    position: relative;
+  }
+  .velvet-overlay::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: 
+      url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+    opacity: 0.4;
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* Glow border */
+  .glow-border-cyan {
+    border: 1px solid rgba(0, 229, 192, 0.3);
+    box-shadow: 0 0 20px rgba(0, 229, 192, 0.1), inset 0 0 20px rgba(0, 229, 192, 0.02);
+  }
+  .glow-border-cyan:hover {
+    border-color: rgba(0, 229, 192, 0.6);
+    box-shadow: 0 0 30px rgba(0, 229, 192, 0.2), inset 0 0 30px rgba(0, 229, 192, 0.03);
+  }
+
+  .glow-border-gold {
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.08);
+  }
+  .glow-border-gold:hover {
+    border-color: rgba(212, 175, 55, 0.6);
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.15);
+  }
+
+  /* Link underline — cyan glow */
   .link-underline {
     @apply relative;
   }
   .link-underline::after {
     content: '';
-    @apply absolute bottom-0 left-0 h-px w-0 bg-foreground transition-all duration-300;
+    @apply absolute bottom-0 left-0 h-px w-0 transition-all duration-400;
+    background: linear-gradient(90deg, #00E5C0, #D4AF37);
   }
   .link-underline:hover::after {
     @apply w-full;
   }
 
-  /* Brand color utilities - uses colors from Store.metadata.brand */
+  /* 3D product card effect */
+  .card-3d {
+    transform-style: preserve-3d;
+    transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  .card-3d:hover {
+    transform: perspective(1000px) rotateY(-3deg) rotateX(2deg) translateY(-4px);
+  }
+
+  /* Velour shimmer button */
+  .btn-velour {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, #D4AF37, #9A7E28);
+    color: #0A0A0A;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    border: none;
+    transition: all 0.4s ease;
+  }
+  .btn-velour::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.25), transparent);
+    transition: left 0.6s ease;
+  }
+  .btn-velour:hover::before {
+    left: 100%;
+  }
+  .btn-velour:hover {
+    box-shadow: 0 0 30px rgba(212, 175, 55, 0.5), 0 4px 20px rgba(0,0,0,0.6);
+    transform: translateY(-1px);
+  }
+
+  /* Cyan outline button */
+  .btn-cyan {
+    position: relative;
+    overflow: hidden;
+    background: transparent;
+    color: #00E5C0;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    border: 1px solid rgba(0, 229, 192, 0.5);
+    transition: all 0.4s ease;
+  }
+  .btn-cyan:hover {
+    background: rgba(0, 229, 192, 0.1);
+    border-color: #00E5C0;
+    box-shadow: 0 0 25px rgba(0, 229, 192, 0.3);
+    color: #fff;
+  }
+
+  /* Brand color utilities */
   .btn-brand-primary {
-    background-color: var(--brand-primary, hsl(var(--primary)));
-    color: white;
+    background: linear-gradient(135deg, #D4AF37, #9A7E28);
+    color: #0A0A0A;
+    font-weight: 700;
   }
   .btn-brand-primary:hover {
     opacity: 0.9;
+    box-shadow: 0 0 25px rgba(212, 175, 55, 0.4);
   }
 
   .text-brand-primary {
-    color: var(--brand-primary, hsl(var(--primary)));
+    color: #D4AF37;
   }
-
   .text-brand-secondary {
-    color: var(--brand-secondary, hsl(var(--accent)));
+    color: #00E5C0;
   }
-
   .border-brand-primary {
-    border-color: var(--brand-primary, hsl(var(--border)));
+    border-color: rgba(212, 175, 55, 0.4);
   }
-
   .bg-brand-primary {
-    background-color: var(--brand-primary, hsl(var(--primary)));
+    background: linear-gradient(135deg, #D4AF37, #9A7E28);
+  }
+  .bg-brand-secondary {
+    background-color: #00E5C0;
   }
 
-  .bg-brand-secondary {
-    background-color: var(--brand-secondary, hsl(var(--accent)));
+  /* Section divider glow */
+  .divider-glow {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(212,175,55,0.4), rgba(0,229,192,0.4), transparent);
+  }
+
+  /* Noise texture */
+  .noise-texture {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  }
+
+  /* Scan line effect */
+  .scan-line {
+    position: relative;
+    overflow: hidden;
+  }
+  .scan-line::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(0,229,192,0.4), transparent);
+    animation: scan-line 3s linear infinite;
+  }
+
+  /* Text tracking wide */
+  .tracking-luxury {
+    letter-spacing: 0.25em;
   }
 }
 
@@ -107,28 +244,68 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Selection color */
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0A0A0A;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, #D4AF37, #4A1C2F);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, #E8CC6A, #6B2D47);
+}
+
+/* Selection */
 ::selection {
-  @apply bg-accent/20 text-foreground;
+  background: rgba(0, 229, 192, 0.2);
+  color: #fff;
 }
 
 /* Focus styles */
 :focus-visible {
-  @apply outline-2 outline-offset-2 outline-ring;
+  outline: 2px solid rgba(0, 229, 192, 0.6);
+  outline-offset: 2px;
 }
 
-/* Cookie consent animation */
+/* CSS keyframes for text shimmer */
+@keyframes text-shimmer {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+@keyframes scan-line {
+  0% { transform: translateY(-100%); top: 0; }
+  100% { transform: translateY(0); top: 100%; }
+}
+
+/* Fade-in for cookie consent */
 @keyframes fade-in {
-  from {
-    opacity: 0;
-    transform: translateY(1rem);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(1rem); }
+  to { opacity: 1; transform: translateY(0); }
 }
-
 .animate-fade-in {
   animation: fade-in 0.3s ease-out;
+}
+
+/* Particle animation */
+@keyframes particle-float {
+  0% { opacity: 0; transform: translateY(0) scale(0); }
+  20% { opacity: 0.8; }
+  100% { opacity: 0; transform: translateY(-80px) scale(0.3); }
+}
+
+/* Glitch effect for hero text */
+@keyframes glitch {
+  0%, 95%, 100% { transform: none; clip-path: none; }
+  96% { transform: translateX(-2px); clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%); }
+  97% { transform: translateX(2px); clip-path: polygon(0 60%, 100% 60%, 100% 80%, 0 80%); }
+  98% { transform: none; clip-path: none; }
+}
+
+.text-glitch {
+  animation: glitch 8s ease-in-out infinite;
 }
