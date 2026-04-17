@@ -2,92 +2,12 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect } from 'react'
 import { ArrowRight, Sparkles, Star, Zap, Shield, RefreshCw, Truck } from 'lucide-react'
-import { motion, useInView, useScroll, useTransform } from 'framer-motion'
 import CollectionSection from '@/components/marketing/collection-section'
 import { useCollections } from '@/hooks/use-collections'
 
 const LOGO_URL = 'https://fdkykcojwvimoabfaqjc.storage.supabase.co/storage/v1/object/public/product-user-files/default%2Fimage-2-01KPCFCBKXANQBG2WHER60MHYV.webp'
-
-// Floating particles component
-function Particles() {
-  const particles = Array.from({ length: 20 }, (_, i) => i)
-  return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {particles.map((i) => (
-        <motion.div
-          key={i}
-          className="absolute rounded-full"
-          style={{
-            width: Math.random() * 3 + 1,
-            height: Math.random() * 3 + 1,
-            left: `${Math.random() * 100}%`,
-            top: `${Math.random() * 100}%`,
-            background: i % 3 === 0 ? '#00E5C0' : i % 3 === 1 ? '#D4AF37' : '#8B3A5A',
-          }}
-          animate={{
-            y: [0, -80, 0],
-            opacity: [0, 0.8, 0],
-            scale: [0, 1, 0],
-          }}
-          transition={{
-            duration: 3 + Math.random() * 4,
-            repeat: Infinity,
-            delay: Math.random() * 5,
-            ease: 'easeOut',
-          }}
-        />
-      ))}
-    </div>
-  )
-}
-
-// Glowing orb
-function GlowOrb({ color, size, x, y, blur }: { color: string; size: number; x: string; y: string; blur: number }) {
-  return (
-    <motion.div
-      className="absolute rounded-full pointer-events-none"
-      style={{
-        width: size,
-        height: size,
-        left: x,
-        top: y,
-        background: color,
-        filter: `blur(${blur}px)`,
-        opacity: 0.15,
-      }}
-      animate={{ scale: [1, 1.2, 1], opacity: [0.12, 0.2, 0.12] }}
-      transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-    />
-  )
-}
-
-// Section heading with reveal animation
-function SectionHeading({ label, title, subtitle, accent = 'gold' }: {
-  label: string
-  title: React.ReactNode
-  subtitle?: string
-  accent?: 'gold' | 'cyan'
-}) {
-  const ref = useRef(null)
-  const inView = useInView(ref, { once: true, margin: '-80px' })
-  return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 40 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
-      className="text-center mb-16"
-    >
-      <span className={`inline-block text-xs tracking-luxury uppercase mb-4 font-semibold ${accent === 'gold' ? 'text-gold-DEFAULT' : 'text-cyan-neon'}`}>
-        ✦ {label} ✦
-      </span>
-      <h2 className="font-heading text-h2 font-bold text-white">{title}</h2>
-      {subtitle && <p className="mt-4 text-muted-foreground max-w-xl mx-auto text-base leading-relaxed">{subtitle}</p>}
-    </motion.div>
-  )
-}
 
 const ritualSteps = [
   { step: '01', title: 'Cleanse', desc: 'Begin with our sea salt glow scrub to purify and polish.', icon: '🌊', color: '#00E5C0' },
@@ -97,89 +17,27 @@ const ritualSteps = [
 ]
 
 const testimonials = [
-  {
-    name: 'Amara V.',
-    title: 'Model & Content Creator',
-    text: 'Velour Noire completely transformed my morning routine. The LED mask gave me glass skin in 3 weeks.',
-    stars: 5,
-  },
-  {
-    name: 'Malik D.',
-    title: 'Grooming Enthusiast',
-    text: 'The EMS jaw lifter is unreal. My jawline has never looked sharper. Worth every penny.',
-    stars: 5,
-  },
-  {
-    name: 'Sofia L.',
-    title: 'Luxury Beauty Editor',
-    text: 'This is what high-end French skincare meets modern tech feels like. Obsessed with the gua sha ritual.',
-    stars: 5,
-  },
+  { name: 'Amara V.', title: 'Model & Content Creator', text: 'Velour Noire completely transformed my morning routine. The LED mask gave me glass skin in 3 weeks.', stars: 5 },
+  { name: 'Malik D.', title: 'Grooming Enthusiast', text: 'The EMS jaw lifter is unreal. My jawline has never looked sharper. Worth every penny.', stars: 5 },
+  { name: 'Sofia L.', title: 'Luxury Beauty Editor', text: 'This is what high-end French skincare meets modern tech feels like. Obsessed with the gua sha ritual.', stars: 5 },
 ]
 
 const featuredProducts = [
-  {
-    name: 'LED Photon Face Mask',
-    subtitle: 'Light Therapy System',
-    price: '$189',
-    tag: 'BESTSELLER',
-    tagColor: '#D4AF37',
-    glow: '#00E5C0',
-    emoji: '💡',
-    category: 'Face Tech',
-    benefit: '7-color LED therapy for glass skin',
-  },
-  {
-    name: 'EMS Jaw & Neck Lifter',
-    subtitle: 'Microcurrent Sculptor',
-    price: '$149',
-    tag: 'NEW',
-    tagColor: '#00E5C0',
-    glow: '#D4AF37',
-    emoji: '⚡',
-    category: 'Face Sculpting',
-    benefit: 'Define jawline & lift neck skin',
-  },
-  {
-    name: 'Rose Quartz Gua Sha',
-    subtitle: 'Velour Edition',
-    price: '$68',
-    tag: 'RITUAL',
-    tagColor: '#8B3A5A',
-    glow: '#8B3A5A',
-    emoji: '🌸',
-    category: 'Tools',
-    benefit: 'Lymphatic drainage & facial sculpt',
-  },
-  {
-    name: 'Rosemary Growth Oil',
-    subtitle: 'Hair Elixir',
-    price: '$78',
-    tag: 'GLOW-UP',
-    tagColor: '#D4AF37',
-    glow: '#00E5C0',
-    emoji: '🌿',
-    category: 'Hair',
-    benefit: 'Stimulates growth & restores shine',
-  },
+  { name: 'LED Photon Face Mask', subtitle: 'Light Therapy System', price: 'R3,399', tag: 'BESTSELLER', tagColor: '#D4AF37', glow: '#00E5C0', emoji: '💡', category: 'Face Tech', benefit: '7-color LED therapy for glass skin' },
+  { name: 'EMS Jaw & Neck Lifter', subtitle: 'Microcurrent Sculptor', price: 'R2,699', tag: 'NEW', tagColor: '#00E5C0', glow: '#D4AF37', emoji: '⚡', category: 'Face Sculpting', benefit: 'Define jawline & lift neck skin' },
+  { name: 'Rose Quartz Gua Sha', subtitle: 'Velour Edition', price: 'R1,249', tag: 'RITUAL', tagColor: '#8B3A5A', glow: '#8B3A5A', emoji: '🌸', category: 'Tools', benefit: 'Lymphatic drainage & facial sculpt' },
+  { name: 'Rosemary Growth Oil', subtitle: 'Hair Elixir', price: 'R1,399', tag: 'GLOW-UP', tagColor: '#D4AF37', glow: '#00E5C0', emoji: '🌿', category: 'Hair', benefit: 'Stimulates growth & restores shine' },
 ]
 
-const bundleData = {
-  name: 'The Velour Ritual — Full Glow-Up Bundle',
-  items: ['LED Photon Mask', 'EMS Jaw Lifter', 'Rose Quartz Gua Sha', 'Ice Roller', 'Sea Salt Glow Scrub'],
-  originalPrice: '$534',
-  bundlePrice: '$379',
-  savings: 'Save $155',
-}
+const bundleItems = ['LED Photon Mask', 'EMS Jaw Lifter', 'Rose Quartz Gua Sha', 'Ice Roller', 'Sea Salt Glow Scrub']
 
 export default function HomePage() {
-  const { data: collections, isLoading } = useCollections()
+  const { data: collections } = useCollections()
   const [newsletterEmail, setNewsletterEmail] = useState('')
   const [activeTestimonial, setActiveTestimonial] = useState(0)
-  const heroRef = useRef(null)
-  const { scrollYProgress } = useScroll({ target: heroRef, offset: ['start start', 'end start'] })
-  const heroY = useTransform(scrollYProgress, [0, 1], ['0%', '30%'])
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.8], [1, 0])
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => { setMounted(true) }, [])
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -190,284 +48,139 @@ export default function HomePage() {
 
   return (
     <div className="bg-noir-black">
-      {/* ═══════════════════════════════════════════════════
+
+      {/* ═══════════════════════════════════════════
           CINEMATIC HERO
-      ═══════════════════════════════════════════════════ */}
-      <section ref={heroRef} className="relative min-h-screen flex items-center overflow-hidden">
+      ═══════════════════════════════════════════ */}
+      <section className="relative min-h-screen flex items-center overflow-hidden">
         {/* Deep velvet background */}
-        <div className="absolute inset-0 bg-hero-gradient" />
+        <div className="absolute inset-0" style={{ background: 'radial-gradient(ellipse at 30% 50%, rgba(74,28,47,0.45) 0%, #0A0A0A 60%), radial-gradient(ellipse at 80% 20%, rgba(0,229,192,0.06) 0%, transparent 50%)' }} />
 
-        {/* Glowing orbs */}
-        <GlowOrb color="#00E5C0" size={600} x="-10%" y="20%" blur={120} />
-        <GlowOrb color="#4A1C2F" size={500} x="60%" y="-10%" blur={100} />
-        <GlowOrb color="#D4AF37" size={400} x="80%" y="60%" blur={100} />
+        {/* Animated glow orbs */}
+        <div className="absolute rounded-full pointer-events-none animate-pulse" style={{ width: 600, height: 600, left: '-10%', top: '20%', background: 'radial-gradient(ellipse, rgba(0,229,192,0.08) 0%, transparent 70%)', filter: 'blur(80px)' }} />
+        <div className="absolute rounded-full pointer-events-none animate-pulse" style={{ width: 500, height: 500, right: '-5%', top: '-10%', background: 'radial-gradient(ellipse, rgba(74,28,47,0.3) 0%, transparent 70%)', filter: 'blur(80px)', animationDelay: '1s' }} />
+        <div className="absolute rounded-full pointer-events-none animate-pulse" style={{ width: 400, height: 400, right: '5%', bottom: '10%', background: 'radial-gradient(ellipse, rgba(212,175,55,0.08) 0%, transparent 70%)', filter: 'blur(80px)', animationDelay: '2s' }} />
 
-        {/* Particles */}
-        <Particles />
-
-        {/* Decorative vertical lines */}
+        {/* Vertical accent lines */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute left-[10%] top-0 bottom-0 w-px"
-            style={{ background: 'linear-gradient(180deg, transparent, rgba(212,175,55,0.2), transparent)' }} />
-          <div className="absolute right-[10%] top-0 bottom-0 w-px"
-            style={{ background: 'linear-gradient(180deg, transparent, rgba(0,229,192,0.2), transparent)' }} />
+          <div className="absolute left-[10%] top-0 bottom-0 w-px" style={{ background: 'linear-gradient(180deg, transparent, rgba(212,175,55,0.2), transparent)' }} />
+          <div className="absolute right-[10%] top-0 bottom-0 w-px" style={{ background: 'linear-gradient(180deg, transparent, rgba(0,229,192,0.2), transparent)' }} />
         </div>
 
-        {/* Scan line effect */}
+        {/* Scan line */}
         <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <motion.div
-            className="absolute left-0 right-0 h-[1px]"
-            style={{ background: 'linear-gradient(90deg, transparent, rgba(0,229,192,0.15), transparent)' }}
-            animate={{ top: ['0%', '100%'] }}
-            transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
-          />
+          <div className="absolute left-0 right-0 h-px scan-line" style={{ background: 'linear-gradient(90deg, transparent, rgba(0,229,192,0.15), transparent)' }} />
         </div>
 
         <div className="container-custom relative z-10 py-32 pt-40">
           <div className="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+
             {/* Left — Text */}
             <div className="space-y-8">
-              {/* Label */}
-              <motion.div
-                initial={{ opacity: 0, x: -30 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.8, delay: 0.1 }}
-                className="flex items-center gap-3"
-              >
+              <div className="flex items-center gap-3 animate-fade-in-up" style={{ animationDelay: '0.1s' }}>
                 <div className="h-px w-12" style={{ background: 'linear-gradient(90deg, #00E5C0, transparent)' }} />
-                <span className="text-xs tracking-luxury uppercase font-semibold text-cyan-neon">
+                <span className="text-xs tracking-widest uppercase font-semibold" style={{ color: '#00E5C0' }}>
                   Luxury Dark Ritual Care
                 </span>
-              </motion.div>
+              </div>
 
-              {/* Main headline */}
-              <motion.div
-                initial={{ opacity: 0, y: 50 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 1, delay: 0.2, ease: [0.23, 1, 0.32, 1] }}
-              >
-                <h1 className="font-heading text-display font-black leading-[1.02] text-balance">
+              <div className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+                <h1 className="font-heading font-black leading-[1.02]" style={{ fontSize: 'clamp(3rem, 8vw, 5.5rem)' }}>
                   <span className="block text-white">Your</span>
-                  <span className="block text-gold-gradient italic">Glow-Up</span>
+                  <span className="block italic" style={{ background: 'linear-gradient(135deg, #D4AF37, #F4D875, #9A7E28)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Glow-Up</span>
                   <span className="block text-white">Awaits.</span>
                 </h1>
-              </motion.div>
+              </div>
 
-              {/* Subheadline */}
-              <motion.p
-                initial={{ opacity: 0, y: 30 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.9, delay: 0.4 }}
-                className="text-lg text-muted-foreground max-w-lg leading-relaxed"
-              >
-                Premium LED therapy, microcurrent sculpting, gua sha rituals — 
+              <p className="text-lg text-white/50 max-w-lg leading-relaxed animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
+                Premium LED therapy, microcurrent sculpting, gua sha rituals —
                 curated for the <em className="text-white not-italic font-medium">model-level glow</em> you deserve.
-              </motion.p>
+              </p>
 
-              {/* Badges */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.5 }}
-                className="flex flex-wrap gap-3"
-              >
+              <div className="flex flex-wrap gap-3 animate-fade-in-up" style={{ animationDelay: '0.5s' }}>
                 {['LED Therapy', 'EMS Sculpting', 'Gua Sha', 'Hair Growth'].map((badge) => (
                   <span key={badge} className="text-xs px-3 py-1.5 rounded-full font-medium tracking-wide"
-                    style={{
-                      background: 'rgba(0,229,192,0.08)',
-                      border: '1px solid rgba(0,229,192,0.2)',
-                      color: '#00E5C0',
-                    }}>
+                    style={{ background: 'rgba(0,229,192,0.08)', border: '1px solid rgba(0,229,192,0.2)', color: '#00E5C0' }}>
                     {badge}
                   </span>
                 ))}
-              </motion.div>
+              </div>
 
-              {/* CTAs */}
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.8, delay: 0.6 }}
-                className="flex flex-wrap gap-4 pt-2"
-              >
-                <Link href="/products" className="btn-velour inline-flex items-center gap-2.5 px-8 py-4 text-sm rounded-sm">
-                  Begin Your Ritual
-                  <ArrowRight className="h-4 w-4" />
+              <div className="flex flex-wrap gap-4 pt-2 animate-fade-in-up" style={{ animationDelay: '0.6s' }}>
+                <Link href="/products" className="inline-flex items-center gap-2.5 px-8 py-4 text-sm font-bold tracking-widest uppercase transition-all duration-300 hover:scale-105 hover:gap-4"
+                  style={{ background: 'linear-gradient(135deg, #4A1C2F, #6B2943)', border: '1px solid rgba(212,175,55,0.4)', color: '#D4AF37', boxShadow: '0 0 30px rgba(74,28,47,0.5)' }}>
+                  Begin Your Ritual <ArrowRight className="h-4 w-4" />
                 </Link>
-                <Link href="/collections" className="btn-cyan inline-flex items-center gap-2.5 px-8 py-4 text-sm rounded-sm">
+                <Link href="/collections" className="inline-flex items-center gap-2.5 px-8 py-4 text-sm font-bold tracking-widest uppercase transition-all duration-300 hover:scale-105"
+                  style={{ background: 'rgba(0,229,192,0.08)', border: '1px solid rgba(0,229,192,0.3)', color: '#00E5C0' }}>
                   Explore Collections
                 </Link>
-              </motion.div>
+              </div>
 
-              {/* Stats */}
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 1, delay: 0.9 }}
-                className="flex gap-8 pt-4 border-t border-white/5"
-              >
+              <div className="flex gap-8 pt-4 border-t border-white/5 animate-fade-in-up" style={{ animationDelay: '0.9s' }}>
                 {[['50K+', 'Glowing Clients'], ['7', 'LED Wavelengths'], ['100%', 'Natural Actives']].map(([num, label]) => (
                   <div key={label}>
-                    <div className="text-xl font-bold text-gold-DEFAULT font-heading">{num}</div>
-                    <div className="text-xs text-muted-foreground mt-0.5">{label}</div>
+                    <div className="text-xl font-bold font-heading" style={{ color: '#D4AF37' }}>{num}</div>
+                    <div className="text-xs text-white/40 mt-0.5">{label}</div>
                   </div>
                 ))}
-              </motion.div>
+              </div>
             </div>
 
-            {/* Right — Cinematic Logo Showcase */}
-            <motion.div
-              initial={{ opacity: 0, scale: 0.85 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 1.4, delay: 0.3, ease: [0.23, 1, 0.32, 1] }}
-              style={{ y: heroY, opacity: heroOpacity }}
-              className="relative flex items-center justify-center"
-            >
-              {/* Pulsing deep burgundy + cyan ambient glow behind logo */}
-              <motion.div
-                className="absolute rounded-full pointer-events-none"
-                style={{
-                  width: 520,
-                  height: 520,
-                  background: 'radial-gradient(ellipse, rgba(74,28,47,0.55) 0%, rgba(0,229,192,0.06) 50%, transparent 75%)',
-                  filter: 'blur(60px)',
-                }}
-                animate={{ scale: [1, 1.12, 1], opacity: [0.7, 1, 0.7] }}
-                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-              />
+            {/* Right — Cinematic Logo */}
+            <div className="relative flex items-center justify-center animate-fade-in" style={{ animationDelay: '0.3s' }}>
+              {/* Pulsing ambient glow */}
+              <div className="absolute rounded-full pointer-events-none animate-pulse"
+                style={{ width: 520, height: 520, background: 'radial-gradient(ellipse, rgba(74,28,47,0.55) 0%, rgba(0,229,192,0.06) 50%, transparent 75%)', filter: 'blur(60px)' }} />
 
-              {/* Outer rotating ring ornament */}
-              <motion.div
-                className="absolute rounded-full border pointer-events-none"
-                style={{
-                  width: 440,
-                  height: 440,
-                  borderColor: 'rgba(212,175,55,0.12)',
-                  borderStyle: 'solid',
-                  borderWidth: '1px',
-                }}
-                animate={{ rotate: 360 }}
-                transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
-              />
+              {/* Rotating outer ring */}
+              <div className="absolute rounded-full border pointer-events-none" style={{ width: 440, height: 440, borderColor: 'rgba(212,175,55,0.12)', animation: 'spin 40s linear infinite' }} />
+              {/* Counter-rotating inner ring */}
+              <div className="absolute rounded-full border border-dashed pointer-events-none" style={{ width: 380, height: 380, borderColor: 'rgba(0,229,192,0.08)', animation: 'spin 28s linear infinite reverse' }} />
 
-              {/* Inner rotating ring */}
-              <motion.div
-                className="absolute rounded-full border pointer-events-none"
-                style={{
-                  width: 380,
-                  height: 380,
-                  borderColor: 'rgba(0,229,192,0.08)',
-                  borderStyle: 'dashed',
-                  borderWidth: '1px',
-                }}
-                animate={{ rotate: -360 }}
-                transition={{ duration: 28, repeat: Infinity, ease: 'linear' }}
-              />
+              {/* Logo — floating animation */}
+              <div className="relative z-10 float-animation"
+                style={{ filter: 'drop-shadow(0 0 40px rgba(212,175,55,0.5)) drop-shadow(0 0 80px rgba(74,28,47,0.8)) drop-shadow(0 0 20px rgba(0,229,192,0.15))' }}>
+                <Image src={LOGO_URL} alt="Velour Noire" width={380} height={480}
+                  className="object-contain" style={{ maxHeight: '480px', width: 'auto' }} priority unoptimized />
+              </div>
 
-              {/* Gold corner accents */}
-              {[0, 90, 180, 270].map((angle) => (
-                <motion.div
-                  key={angle}
-                  className="absolute pointer-events-none"
-                  style={{
-                    width: 12,
-                    height: 12,
-                    borderTop: '2px solid rgba(212,175,55,0.6)',
-                    borderLeft: '2px solid rgba(212,175,55,0.6)',
-                    transform: `rotate(${angle}deg) translate(180px, 0px)`,
-                    transformOrigin: 'center center',
-                  }}
-                />
-              ))}
-
-              {/* The Logo — cinematic, glowing, floating */}
-              <motion.div
-                className="relative z-10"
-                animate={{
-                  y: [-10, 10, -10],
-                  rotateZ: [-0.5, 0.5, -0.5],
-                }}
-                transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-                style={{
-                  filter: 'drop-shadow(0 0 40px rgba(212,175,55,0.5)) drop-shadow(0 0 80px rgba(74,28,47,0.8)) drop-shadow(0 0 20px rgba(0,229,192,0.15))',
-                }}
-              >
-                <Image
-                  src={LOGO_URL}
-                  alt="Velour Noire"
-                  width={380}
-                  height={480}
-                  className="object-contain"
-                  style={{ maxHeight: '480px', width: 'auto' }}
-                  priority
-                  unoptimized
-                />
-              </motion.div>
-
-              {/* Floating product badge — EMS */}
-              <motion.div
-                className="absolute -right-2 top-20 rounded-xl px-4 py-3"
-                style={{
-                  background: 'rgba(10,10,10,0.92)',
-                  border: '1px solid rgba(0,229,192,0.35)',
-                  backdropFilter: 'blur(12px)',
-                  boxShadow: '0 0 25px rgba(0,229,192,0.12)',
-                }}
-                animate={{ x: [0, 8, 0], y: [0, -5, 0] }}
-                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-              >
-                <div className="text-cyan-neon font-bold text-sm">⚡ EMS Lift</div>
+              {/* Floating badge — EMS */}
+              <div className="absolute -right-2 top-20 rounded-xl px-4 py-3 badge-float"
+                style={{ background: 'rgba(10,10,10,0.92)', border: '1px solid rgba(0,229,192,0.35)', backdropFilter: 'blur(12px)', boxShadow: '0 0 25px rgba(0,229,192,0.12)' }}>
+                <div className="font-bold text-sm" style={{ color: '#00E5C0' }}>⚡ EMS Lift</div>
                 <div className="text-white/50 text-xs mt-0.5">Jaw Sculpting</div>
-              </motion.div>
+              </div>
 
-              {/* Floating product badge — Gua Sha */}
-              <motion.div
-                className="absolute -left-2 bottom-28 rounded-xl px-4 py-3"
-                style={{
-                  background: 'rgba(10,10,10,0.92)',
-                  border: '1px solid rgba(212,175,55,0.35)',
-                  backdropFilter: 'blur(12px)',
-                  boxShadow: '0 0 25px rgba(212,175,55,0.12)',
-                }}
-                animate={{ x: [0, -8, 0], y: [0, 5, 0] }}
-                transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
-              >
-                <div className="text-gold-DEFAULT font-bold text-sm">🌸 Gua Sha</div>
+              {/* Floating badge — Gua Sha */}
+              <div className="absolute -left-2 bottom-28 rounded-xl px-4 py-3 badge-float-alt"
+                style={{ background: 'rgba(10,10,10,0.92)', border: '1px solid rgba(212,175,55,0.35)', backdropFilter: 'blur(12px)', boxShadow: '0 0 25px rgba(212,175,55,0.12)', animationDelay: '1s' }}>
+                <div className="font-bold text-sm" style={{ color: '#D4AF37' }}>🌸 Gua Sha</div>
                 <div className="text-white/50 text-xs mt-0.5">Velour Edition</div>
-              </motion.div>
+              </div>
 
-              {/* Floating product badge — LED */}
-              <motion.div
-                className="absolute left-1/2 -translate-x-1/2 -bottom-4 rounded-xl px-5 py-3"
-                style={{
-                  background: 'rgba(10,10,10,0.92)',
-                  border: '1px solid rgba(139,58,90,0.4)',
-                  backdropFilter: 'blur(12px)',
-                  boxShadow: '0 0 25px rgba(139,58,90,0.15)',
-                }}
-                animate={{ y: [0, -6, 0] }}
-                transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
-              >
+              {/* Floating badge — LED */}
+              <div className="absolute left-1/2 -translate-x-1/2 -bottom-4 rounded-xl px-5 py-3 badge-float"
+                style={{ background: 'rgba(10,10,10,0.92)', border: '1px solid rgba(139,58,90,0.4)', backdropFilter: 'blur(12px)', boxShadow: '0 0 25px rgba(139,58,90,0.15)', animationDelay: '0.5s' }}>
                 <div className="text-center">
                   <div className="font-bold text-sm" style={{ color: '#8B3A5A' }}>💡 LED Photon Mask</div>
-                  <div className="text-gold-DEFAULT text-xs font-bold mt-0.5">From R3,399</div>
+                  <div className="text-xs font-bold mt-0.5" style={{ color: '#D4AF37' }}>From R3,399</div>
                 </div>
-              </motion.div>
-            </motion.div>
+              </div>
+            </div>
           </div>
         </div>
 
         {/* Bottom fade */}
-        <div className="absolute bottom-0 left-0 right-0 h-32"
-          style={{ background: 'linear-gradient(0deg, #0A0A0A, transparent)' }} />
+        <div className="absolute bottom-0 left-0 right-0 h-32" style={{ background: 'linear-gradient(0deg, #0A0A0A, transparent)' }} />
       </section>
 
-      {/* ═══════════════════════════════════════════════════
+      {/* ═══════════════════════════════════════════
           TRUST BAR
-      ═══════════════════════════════════════════════════ */}
+      ═══════════════════════════════════════════ */}
       <div className="relative py-6 overflow-hidden">
-        <div className="divider-glow mb-6" />
-        <div className="container-custom">
+        <div className="h-px w-full" style={{ background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.3), rgba(0,229,192,0.2), transparent)' }} />
+        <div className="container-custom py-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             {[
               { icon: Truck, label: 'Free Shipping', sub: 'Orders over R1,500', color: '#00E5C0' },
@@ -475,401 +188,249 @@ export default function HomePage() {
               { icon: Shield, label: 'Clinically Tested', sub: 'Dermatologist approved', color: '#8B3A5A' },
               { icon: Zap, label: 'Fast Results', sub: 'Visible in 2 weeks', color: '#00E5C0' },
             ].map(({ icon: Icon, label, sub, color }) => (
-              <motion.div
-                key={label}
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5 }}
-                className="flex items-center gap-3 justify-center md:justify-start"
-              >
+              <div key={label} className="flex items-center gap-3 justify-center md:justify-start">
                 <div className="w-10 h-10 rounded-lg flex items-center justify-center flex-shrink-0"
                   style={{ background: `${color}15`, border: `1px solid ${color}30` }}>
                   <Icon className="h-4 w-4" style={{ color }} strokeWidth={1.5} />
                 </div>
                 <div>
                   <div className="text-sm font-semibold text-white">{label}</div>
-                  <div className="text-xs text-muted-foreground">{sub}</div>
+                  <div className="text-xs text-white/40">{sub}</div>
                 </div>
-              </motion.div>
+              </div>
             ))}
           </div>
         </div>
-        <div className="divider-glow mt-6" />
+        <div className="h-px w-full" style={{ background: 'linear-gradient(90deg, transparent, rgba(212,175,55,0.3), rgba(0,229,192,0.2), transparent)' }} />
       </div>
 
-      {/* ═══════════════════════════════════════════════════
+      {/* ═══════════════════════════════════════════
           FEATURED PRODUCTS
-      ═══════════════════════════════════════════════════ */}
-      <section className="py-section relative overflow-hidden">
-        <GlowOrb color="#D4AF37" size={400} x="70%" y="20%" blur={120} />
+      ═══════════════════════════════════════════ */}
+      <section className="py-24 relative overflow-hidden">
+        <div className="absolute rounded-full pointer-events-none animate-pulse" style={{ width: 400, height: 400, right: '10%', top: '10%', background: 'radial-gradient(ellipse, rgba(212,175,55,0.06) 0%, transparent 70%)', filter: 'blur(80px)' }} />
 
         <div className="container-custom relative z-10">
-          <SectionHeading
-            label="The Collection"
-            title={<>Velour <span className="text-gold-gradient italic">Signature</span> Picks</>}
-            subtitle="Curated tools and elixirs for your daily model-level ritual. Each piece designed to transform."
-            accent="gold"
-          />
+          <div className="text-center mb-16">
+            <span className="inline-block text-xs tracking-widest uppercase mb-4 font-semibold" style={{ color: '#D4AF37' }}>✦ The Collection ✦</span>
+            <h2 className="font-heading text-4xl md:text-5xl font-bold text-white">
+              Velour <span className="italic" style={{ background: 'linear-gradient(135deg, #D4AF37, #F4D875, #9A7E28)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Signature</span> Picks
+            </h2>
+            <p className="mt-4 text-white/40 max-w-xl mx-auto text-base leading-relaxed">Curated tools and elixirs for your daily model-level ritual. Each piece designed to transform.</p>
+          </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {featuredProducts.map((product, i) => (
-              <motion.div
-                key={product.name}
-                initial={{ opacity: 0, y: 50 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-50px' }}
-                transition={{ duration: 0.7, delay: i * 0.1, ease: [0.23, 1, 0.32, 1] }}
-              >
-                <Link href="/products" className="group block card-3d">
-                  <div className="rounded-xl overflow-hidden transition-all duration-500"
-                    style={{
-                      background: 'linear-gradient(145deg, #161616, #1A1018)',
-                      border: `1px solid rgba(${product.glow === '#00E5C0' ? '0,229,192' : product.glow === '#D4AF37' ? '212,175,55' : '139,58,90'},0.15)`,
-                      boxShadow: '0 4px 24px rgba(0,0,0,0.6)',
-                    }}>
-                    {/* Product image area */}
-                    <div className="relative h-52 flex items-center justify-center overflow-hidden"
-                      style={{
-                        background: `radial-gradient(ellipse at center, ${product.glow}10 0%, transparent 70%)`,
-                      }}>
-                      {/* Tag */}
-                      <div className="absolute top-3 left-3 text-[10px] font-bold tracking-widest px-2.5 py-1 rounded-full"
-                        style={{ background: `${product.tagColor}20`, color: product.tagColor, border: `1px solid ${product.tagColor}40` }}>
-                        {product.tag}
-                      </div>
-
-                      {/* Product emoji */}
-                      <motion.div
-                        className="text-6xl"
-                        animate={{ y: [-4, 4, -4] }}
-                        transition={{ duration: 3 + i * 0.5, repeat: Infinity, ease: 'easeInOut' }}
-                      >
-                        {product.emoji}
-                      </motion.div>
-
-                      {/* Glow under product */}
-                      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-24 h-8 rounded-full"
-                        style={{ background: `radial-gradient(ellipse, ${product.glow}40, transparent)`, filter: 'blur(10px)' }} />
-
-                      {/* Hover overlay */}
-                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center"
-                        style={{ background: 'rgba(0,0,0,0.5)' }}>
-                        <span className="text-white text-xs font-semibold tracking-widest uppercase border border-white/30 px-4 py-2 rounded-full">
-                          View Product
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Info */}
-                    <div className="p-4 border-t border-white/5">
-                      <div className="text-xs tracking-widest uppercase mb-1" style={{ color: product.glow }}>
-                        {product.category}
-                      </div>
-                      <h3 className="font-heading font-bold text-white text-base leading-tight">{product.name}</h3>
-                      <p className="text-muted-foreground text-xs mt-1">{product.benefit}</p>
-                      <div className="flex items-center justify-between mt-3">
-                        <span className="text-xl font-bold font-heading text-gold-DEFAULT">{product.price}</span>
-                        <div className="flex items-center gap-1">
-                          {[1,2,3,4,5].map(s => (
-                            <Star key={s} className="h-3 w-3 fill-gold-DEFAULT text-gold-DEFAULT" />
-                          ))}
-                        </div>
-                      </div>
+              <Link key={product.name} href="/products"
+                className="group block rounded-xl overflow-hidden transition-all duration-500 hover:-translate-y-2 hover:shadow-2xl"
+                style={{ background: 'linear-gradient(145deg, #161616, #1A1018)', border: `1px solid rgba(${product.glow === '#00E5C0' ? '0,229,192' : product.glow === '#D4AF37' ? '212,175,55' : '139,58,90'},0.15)`, boxShadow: '0 4px 24px rgba(0,0,0,0.6)', animationDelay: `${i * 0.1}s` }}>
+                {/* Product image area */}
+                <div className="relative h-52 flex items-center justify-center overflow-hidden"
+                  style={{ background: `radial-gradient(ellipse at center, ${product.glow}10 0%, transparent 70%)` }}>
+                  <div className="absolute top-3 left-3 text-[10px] font-bold tracking-widest px-2.5 py-1 rounded-full"
+                    style={{ background: `${product.tagColor}20`, color: product.tagColor, border: `1px solid ${product.tagColor}40` }}>
+                    {product.tag}
+                  </div>
+                  <span className="text-6xl float-animation" style={{ animationDelay: `${i * 0.5}s` }}>{product.emoji}</span>
+                  <div className="absolute bottom-4 left-1/2 -translate-x-1/2 w-24 h-8 rounded-full"
+                    style={{ background: `radial-gradient(ellipse, ${product.glow}40, transparent)`, filter: 'blur(10px)' }} />
+                  <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-center justify-center"
+                    style={{ background: 'rgba(0,0,0,0.5)' }}>
+                    <span className="text-white text-xs font-semibold tracking-widest uppercase border border-white/30 px-4 py-2 rounded-full">View Product</span>
+                  </div>
+                </div>
+                {/* Info */}
+                <div className="p-4 border-t border-white/5">
+                  <div className="text-xs tracking-widest uppercase mb-1" style={{ color: product.glow }}>{product.category}</div>
+                  <h3 className="font-heading font-bold text-white text-base leading-tight">{product.name}</h3>
+                  <p className="text-white/40 text-xs mt-1">{product.benefit}</p>
+                  <div className="flex items-center justify-between mt-3">
+                    <span className="text-xl font-bold font-heading" style={{ color: '#D4AF37' }}>{product.price}</span>
+                    <div className="flex items-center gap-0.5">
+                      {[1,2,3,4,5].map(s => <Star key={s} className="h-3 w-3 fill-yellow-500 text-yellow-500" />)}
                     </div>
                   </div>
-                </Link>
-              </motion.div>
+                </div>
+              </Link>
             ))}
           </div>
 
           <div className="text-center mt-12">
-            <Link href="/products" className="btn-velour inline-flex items-center gap-3 px-10 py-4 text-sm rounded-sm">
-              <Sparkles className="h-4 w-4" />
-              Explore Full Collection
-              <ArrowRight className="h-4 w-4" />
+            <Link href="/products" className="inline-flex items-center gap-3 px-10 py-4 text-sm font-bold tracking-widest uppercase transition-all duration-300 hover:scale-105"
+              style={{ background: 'linear-gradient(135deg, #4A1C2F, #6B2943)', border: '1px solid rgba(212,175,55,0.4)', color: '#D4AF37', boxShadow: '0 0 30px rgba(74,28,47,0.5)' }}>
+              <Sparkles className="h-4 w-4" /> Explore Full Collection <ArrowRight className="h-4 w-4" />
             </Link>
           </div>
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════
-          THE VELOUR RITUAL (4-step process)
-      ═══════════════════════════════════════════════════ */}
-      <section className="py-section relative overflow-hidden">
+      {/* ═══════════════════════════════════════════
+          THE VELOUR RITUAL (4-step)
+      ═══════════════════════════════════════════ */}
+      <section className="py-24 relative overflow-hidden">
         <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, #0A0A0A, #0F0813, #0A0A0A)' }} />
-        <GlowOrb color="#4A1C2F" size={600} x="20%" y="30%" blur={150} />
-        <GlowOrb color="#00E5C0" size={300} x="70%" y="60%" blur={100} />
+        <div className="absolute rounded-full pointer-events-none animate-pulse" style={{ width: 600, height: 600, left: '10%', top: '20%', background: 'radial-gradient(ellipse, rgba(74,28,47,0.2) 0%, transparent 70%)', filter: 'blur(100px)' }} />
 
         <div className="container-custom relative z-10">
-          <SectionHeading
-            label="The Daily Ritual"
-            title={<>The Velour <span className="text-cyan-gradient">Ritual</span></>}
-            subtitle="Four steps to model-level skin every single day. Master the glow-up."
-            accent="cyan"
-          />
+          <div className="text-center mb-16">
+            <span className="inline-block text-xs tracking-widest uppercase mb-4 font-semibold" style={{ color: '#00E5C0' }}>✦ The Daily Ritual ✦</span>
+            <h2 className="font-heading text-4xl md:text-5xl font-bold text-white">
+              The Velour <span className="italic" style={{ background: 'linear-gradient(135deg, #00E5C0, #00FFAA)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Ritual</span>
+            </h2>
+            <p className="mt-4 text-white/40 max-w-xl mx-auto text-base">Four steps to model-level skin every single day. Master the glow-up.</p>
+          </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {ritualSteps.map((step, i) => (
-              <motion.div
-                key={step.step}
-                initial={{ opacity: 0, y: 60 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: '-40px' }}
-                transition={{ duration: 0.8, delay: i * 0.15, ease: [0.23, 1, 0.32, 1] }}
-                className="relative group"
-              >
-                {/* Connector line */}
-                {i < ritualSteps.length - 1 && (
-                  <div className="hidden lg:block absolute top-10 left-[calc(100%+8px)] right-0 h-px z-20"
-                    style={{ width: 'calc(100% - 16px)', background: `linear-gradient(90deg, ${step.color}40, transparent)` }} />
-                )}
-
-                <div className="rounded-xl p-6 h-full transition-all duration-500 group-hover:transform group-hover:translateY-[-4px]"
-                  style={{
-                    background: 'linear-gradient(145deg, #161616, #1A1018)',
-                    border: `1px solid ${step.color}25`,
-                    boxShadow: `0 4px 20px rgba(0,0,0,0.5)`,
-                  }}>
-                  {/* Step number */}
-                  <div className="text-xs font-bold tracking-luxury mb-4" style={{ color: step.color }}>
-                    STEP {step.step}
-                  </div>
-
-                  {/* Icon */}
-                  <motion.div
-                    className="text-4xl mb-4"
-                    animate={{ y: [-3, 3, -3] }}
-                    transition={{ duration: 3 + i * 0.7, repeat: Infinity, ease: 'easeInOut' }}
-                  >
-                    {step.icon}
-                  </motion.div>
-
-                  {/* Glow dot */}
-                  <div className="w-1.5 h-1.5 rounded-full mb-4"
-                    style={{ background: step.color, boxShadow: `0 0 8px ${step.color}` }} />
-
-                  <h3 className="font-heading text-xl font-bold text-white mb-2">{step.title}</h3>
-                  <p className="text-muted-foreground text-sm leading-relaxed">{step.desc}</p>
-                </div>
-              </motion.div>
+              <div key={step.step} className="relative group rounded-xl p-6 transition-all duration-500 hover:-translate-y-2"
+                style={{ background: 'linear-gradient(145deg, #161616, #1A1018)', border: `1px solid ${step.color}25`, boxShadow: '0 4px 20px rgba(0,0,0,0.5)' }}>
+                <div className="text-xs font-bold tracking-widest mb-4" style={{ color: step.color }}>STEP {step.step}</div>
+                <div className="text-4xl mb-4 float-animation" style={{ animationDelay: `${i * 0.7}s` }}>{step.icon}</div>
+                <div className="w-1.5 h-1.5 rounded-full mb-4" style={{ background: step.color, boxShadow: `0 0 8px ${step.color}` }} />
+                <h3 className="font-heading text-xl font-bold text-white mb-2">{step.title}</h3>
+                <p className="text-white/40 text-sm leading-relaxed">{step.desc}</p>
+              </div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════
+      {/* ═══════════════════════════════════════════
           COLLECTIONS (from store)
-      ═══════════════════════════════════════════════════ */}
+      ═══════════════════════════════════════════ */}
       {collections && collections.length > 0 && (
-        <section className="py-section">
-          <div className="container-custom">
-            <SectionHeading
-              label="By Category"
-              title={<>Shop by <span className="text-gold-gradient italic">Collection</span></>}
-              subtitle="Explore our curated collections tailored to every glow-up goal."
-              accent="gold"
-            />
+        <section className="py-24">
+          <div className="container-custom mb-4">
+            <div className="text-center mb-16">
+              <span className="inline-block text-xs tracking-widest uppercase mb-4 font-semibold" style={{ color: '#D4AF37' }}>✦ By Category ✦</span>
+              <h2 className="font-heading text-4xl md:text-5xl font-bold text-white">
+                Shop by <span className="italic" style={{ background: 'linear-gradient(135deg, #D4AF37, #F4D875, #9A7E28)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Collection</span>
+              </h2>
+              <p className="mt-4 text-white/40 max-w-xl mx-auto">Explore our curated collections tailored to every glow-up goal.</p>
+            </div>
           </div>
           {collections.map((collection: any, index: number) => (
-            <CollectionSection
-              key={collection.id}
-              collection={collection}
-              alternate={index % 2 === 1}
-            />
+            <CollectionSection key={collection.id} collection={collection} alternate={index % 2 === 1} />
           ))}
         </section>
       )}
 
-      {/* ═══════════════════════════════════════════════════
+      {/* ═══════════════════════════════════════════
           VELOUR RITUAL BUNDLE
-      ═══════════════════════════════════════════════════ */}
-      <section className="py-section relative overflow-hidden">
+      ═══════════════════════════════════════════ */}
+      <section className="py-24 relative overflow-hidden">
         <div className="absolute inset-0" style={{ background: 'linear-gradient(135deg, #0F0813 0%, #0A0A0A 50%, #0D0F0E 100%)' }} />
-        <GlowOrb color="#D4AF37" size={500} x="50%" y="50%" blur={150} />
+        <div className="absolute rounded-full pointer-events-none animate-pulse" style={{ width: 500, height: 500, left: '50%', top: '50%', transform: 'translate(-50%, -50%)', background: 'radial-gradient(ellipse, rgba(212,175,55,0.05) 0%, transparent 70%)', filter: 'blur(100px)' }} />
 
         <div className="container-custom relative z-10">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.9, ease: [0.23, 1, 0.32, 1] }}
-            className="rounded-2xl p-8 md:p-16 text-center relative overflow-hidden"
-            style={{
-              background: 'linear-gradient(135deg, #1A1018 0%, #161616 50%, #1A1A12 100%)',
-              border: '1px solid rgba(212,175,55,0.25)',
-              boxShadow: '0 20px 80px rgba(0,0,0,0.8), 0 0 60px rgba(212,175,55,0.05)',
-            }}
-          >
+          <div className="rounded-2xl p-8 md:p-16 text-center relative overflow-hidden"
+            style={{ background: 'linear-gradient(135deg, #1A1018 0%, #161616 50%, #1A1A12 100%)', border: '1px solid rgba(212,175,55,0.25)', boxShadow: '0 20px 80px rgba(0,0,0,0.8), 0 0 60px rgba(212,175,55,0.05)' }}>
             {/* Corner ornaments */}
-            <div className="absolute top-4 left-4 w-8 h-8 border-t border-l border-gold-DEFAULT/40" />
-            <div className="absolute top-4 right-4 w-8 h-8 border-t border-r border-gold-DEFAULT/40" />
-            <div className="absolute bottom-4 left-4 w-8 h-8 border-b border-l border-gold-DEFAULT/40" />
-            <div className="absolute bottom-4 right-4 w-8 h-8 border-b border-r border-gold-DEFAULT/40" />
+            <div className="absolute top-4 left-4 w-8 h-8 border-t border-l" style={{ borderColor: 'rgba(212,175,55,0.4)' }} />
+            <div className="absolute top-4 right-4 w-8 h-8 border-t border-r" style={{ borderColor: 'rgba(212,175,55,0.4)' }} />
+            <div className="absolute bottom-4 left-4 w-8 h-8 border-b border-l" style={{ borderColor: 'rgba(212,175,55,0.4)' }} />
+            <div className="absolute bottom-4 right-4 w-8 h-8 border-b border-r" style={{ borderColor: 'rgba(212,175,55,0.4)' }} />
 
-            {/* Inner glow */}
-            <div className="absolute inset-0 pointer-events-none"
-              style={{ background: 'radial-gradient(ellipse at center, rgba(212,175,55,0.04) 0%, transparent 70%)' }} />
-
-            <span className="inline-block text-xs tracking-luxury uppercase text-gold-DEFAULT font-semibold mb-6">
-              ✦ Limited Offer — Velour Bundle ✦
-            </span>
-
-            <h2 className="font-heading text-h2 md:text-display font-black text-white mb-4 text-balance">
-              The Complete<br /><span className="text-gold-gradient italic">Glow-Up Kit</span>
+            <span className="inline-block text-xs tracking-widest uppercase font-semibold mb-6" style={{ color: '#D4AF37' }}>✦ Limited Offer — Velour Bundle ✦</span>
+            <h2 className="font-heading text-4xl md:text-5xl font-black text-white mb-4">
+              The Complete<br />
+              <span className="italic" style={{ background: 'linear-gradient(135deg, #D4AF37, #F4D875, #9A7E28)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Glow-Up Kit</span>
             </h2>
+            <p className="text-white/40 text-lg max-w-xl mx-auto mb-8 leading-relaxed">Everything you need for your full daily ritual — bundled and priced for the devoted.</p>
 
-            <p className="text-muted-foreground text-lg max-w-xl mx-auto mb-8 leading-relaxed">
-              Everything you need for your full daily ritual — bundled and priced for the devoted.
-            </p>
-
-            {/* Bundle items */}
             <div className="flex flex-wrap justify-center gap-3 mb-10">
-              {bundleData.items.map((item) => (
+              {bundleItems.map((item) => (
                 <span key={item} className="text-sm px-4 py-2 rounded-full font-medium"
-                  style={{
-                    background: 'rgba(212,175,55,0.08)',
-                    border: '1px solid rgba(212,175,55,0.2)',
-                    color: 'rgba(212,175,55,0.9)',
-                  }}>
+                  style={{ background: 'rgba(212,175,55,0.08)', border: '1px solid rgba(212,175,55,0.2)', color: 'rgba(212,175,55,0.9)' }}>
                   {item}
                 </span>
               ))}
             </div>
 
-            {/* Pricing */}
             <div className="flex items-center justify-center gap-6 mb-10">
-              <span className="text-muted-foreground line-through text-xl">{bundleData.originalPrice}</span>
-              <span className="text-4xl font-black font-heading text-gold-DEFAULT">{bundleData.bundlePrice}</span>
-              <span className="text-sm px-3 py-1 rounded-full font-bold text-cyan-neon"
-                style={{ background: 'rgba(0,229,192,0.1)', border: '1px solid rgba(0,229,192,0.3)' }}>
-                {bundleData.savings}
-              </span>
+              <span className="text-white/40 line-through text-xl">R9,649</span>
+              <span className="text-4xl font-black font-heading" style={{ color: '#D4AF37' }}>R6,849</span>
+              <span className="text-sm px-3 py-1 rounded-full font-bold" style={{ background: 'rgba(0,229,192,0.1)', border: '1px solid rgba(0,229,192,0.3)', color: '#00E5C0' }}>Save R2,800</span>
             </div>
 
-            <Link href="/products" className="btn-velour inline-flex items-center gap-3 px-12 py-5 text-sm rounded-sm">
-              <Sparkles className="h-4 w-4" />
-              Get The Bundle
-              <ArrowRight className="h-4 w-4" />
+            <Link href="/products" className="inline-flex items-center gap-3 px-12 py-5 text-sm font-bold tracking-widest uppercase transition-all duration-300 hover:scale-105"
+              style={{ background: 'linear-gradient(135deg, #4A1C2F, #6B2943)', border: '1px solid rgba(212,175,55,0.4)', color: '#D4AF37', boxShadow: '0 0 40px rgba(74,28,47,0.6)' }}>
+              <Sparkles className="h-4 w-4" /> Get The Bundle <ArrowRight className="h-4 w-4" />
             </Link>
-          </motion.div>
+          </div>
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════
+      {/* ═══════════════════════════════════════════
           TESTIMONIALS
-      ═══════════════════════════════════════════════════ */}
-      <section className="py-section relative overflow-hidden">
-        <GlowOrb color="#4A1C2F" size={400} x="20%" y="50%" blur={100} />
+      ═══════════════════════════════════════════ */}
+      <section className="py-24 relative overflow-hidden">
+        <div className="absolute rounded-full pointer-events-none animate-pulse" style={{ width: 400, height: 400, left: '10%', top: '30%', background: 'radial-gradient(ellipse, rgba(74,28,47,0.2) 0%, transparent 70%)', filter: 'blur(80px)' }} />
 
         <div className="container-custom relative z-10">
-          <SectionHeading
-            label="Velour Community"
-            title={<>Real Results, <span className="text-cyan-gradient">Real Glow</span></>}
-            subtitle="Join 50,000+ who've elevated their daily ritual with Velour Noire."
-            accent="cyan"
-          />
+          <div className="text-center mb-16">
+            <span className="inline-block text-xs tracking-widest uppercase mb-4 font-semibold" style={{ color: '#00E5C0' }}>✦ Velour Community ✦</span>
+            <h2 className="font-heading text-4xl md:text-5xl font-bold text-white">
+              Real Results, <span className="italic" style={{ background: 'linear-gradient(135deg, #00E5C0, #00FFAA)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Real Glow</span>
+            </h2>
+            <p className="mt-4 text-white/40 max-w-xl mx-auto">Join 50,000+ who've elevated their daily ritual with Velour Noire.</p>
+          </div>
 
-          {/* Testimonial slider */}
           <div className="max-w-2xl mx-auto">
-            <motion.div
-              key={activeTestimonial}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.6 }}
-              className="rounded-2xl p-10 text-center relative"
-              style={{
-                background: 'linear-gradient(145deg, #161616, #1A1018)',
-                border: '1px solid rgba(0,229,192,0.15)',
-                boxShadow: '0 10px 40px rgba(0,0,0,0.6), 0 0 30px rgba(0,229,192,0.05)',
-              }}
-            >
-              {/* Quote mark */}
-              <div className="text-6xl text-gold-DEFAULT/20 font-heading leading-none mb-4">"</div>
-
+            <div className="rounded-2xl p-10 text-center relative"
+              style={{ background: 'linear-gradient(145deg, #161616, #1A1018)', border: '1px solid rgba(0,229,192,0.15)', boxShadow: '0 10px 40px rgba(0,0,0,0.6), 0 0 30px rgba(0,229,192,0.05)' }}>
+              <div className="text-6xl font-heading leading-none mb-4" style={{ color: 'rgba(212,175,55,0.2)' }}>"</div>
               <div className="flex justify-center gap-1 mb-6">
-                {[1,2,3,4,5].map(s => (
-                  <Star key={s} className="h-4 w-4 fill-gold-DEFAULT text-gold-DEFAULT" />
-                ))}
+                {[1,2,3,4,5].map(s => <Star key={s} className="h-4 w-4 fill-yellow-500 text-yellow-500" />)}
               </div>
-
-              <p className="text-white/90 text-lg leading-relaxed mb-8 italic font-heading">
+              <p className="text-white/90 text-lg leading-relaxed mb-8 italic font-heading transition-all duration-700">
                 "{testimonials[activeTestimonial].text}"
               </p>
-
               <div>
-                <div className="font-bold text-gold-DEFAULT font-heading">{testimonials[activeTestimonial].name}</div>
-                <div className="text-muted-foreground text-sm mt-1">{testimonials[activeTestimonial].title}</div>
+                <div className="font-bold font-heading" style={{ color: '#D4AF37' }}>{testimonials[activeTestimonial].name}</div>
+                <div className="text-white/40 text-sm mt-1">{testimonials[activeTestimonial].title}</div>
               </div>
-            </motion.div>
-
-            {/* Dots */}
+            </div>
             <div className="flex justify-center gap-2 mt-6">
               {testimonials.map((_, i) => (
-                <button
-                  key={i}
-                  onClick={() => setActiveTestimonial(i)}
+                <button key={i} onClick={() => setActiveTestimonial(i)}
                   className="h-1.5 rounded-full transition-all duration-300"
-                  style={{
-                    width: i === activeTestimonial ? 32 : 8,
-                    background: i === activeTestimonial ? '#D4AF37' : 'rgba(212,175,55,0.25)',
-                  }}
-                />
+                  style={{ width: i === activeTestimonial ? 32 : 8, background: i === activeTestimonial ? '#D4AF37' : 'rgba(212,175,55,0.25)' }} />
               ))}
             </div>
           </div>
         </div>
       </section>
 
-      {/* ═══════════════════════════════════════════════════
+      {/* ═══════════════════════════════════════════
           NEWSLETTER
-      ═══════════════════════════════════════════════════ */}
-      <section className="py-section relative overflow-hidden">
+      ═══════════════════════════════════════════ */}
+      <section className="py-24 relative overflow-hidden">
         <div className="absolute inset-0" style={{ background: 'linear-gradient(180deg, #0A0A0A, #0F0813)' }} />
-        <div className="absolute inset-0 noise-texture" />
-
         <div className="container-custom relative z-10 max-w-2xl text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-          >
-            <span className="text-xs tracking-luxury uppercase text-gold-DEFAULT font-semibold mb-4 block">
-              ✦ Inner Circle ✦
-            </span>
-            <h2 className="font-heading text-h2 font-black text-white mb-4">
-              Enter the <span className="text-gold-gradient italic">Noir Circle</span>
-            </h2>
-            <p className="text-muted-foreground mb-10 text-base leading-relaxed">
-              Early access to new rituals, exclusive bundles, and glow-up guides.
-              No noise — only luxury.
-            </p>
+          <span className="text-xs tracking-widest uppercase font-semibold mb-4 block" style={{ color: '#D4AF37' }}>✦ Inner Circle ✦</span>
+          <h2 className="font-heading text-4xl md:text-5xl font-black text-white mb-4">
+            Enter the <span className="italic" style={{ background: 'linear-gradient(135deg, #D4AF37, #F4D875, #9A7E28)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>Noir Circle</span>
+          </h2>
+          <p className="text-white/40 mb-10 text-base leading-relaxed">Early access to new rituals, exclusive bundles, and glow-up guides. No noise — only luxury.</p>
 
-            <form
-              className="flex flex-col sm:flex-row gap-3"
-              onSubmit={(e) => {
-                e.preventDefault()
-                setNewsletterEmail('')
-              }}
-            >
-              <input
-                type="email"
-                value={newsletterEmail}
-                onChange={(e) => setNewsletterEmail(e.target.value)}
-                placeholder="your@email.com"
-                className="flex-1 px-5 py-4 text-sm text-white placeholder:text-white/30 bg-white/5 border border-white/10 rounded-sm focus:outline-none focus:border-gold-DEFAULT/50 transition-colors"
-              />
-              <button type="submit" className="btn-velour px-8 py-4 text-sm rounded-sm whitespace-nowrap">
-                Join the Circle
-              </button>
-            </form>
-
-            <p className="text-white/30 text-xs mt-4">No spam. Unsubscribe anytime. Pure luxury only.</p>
-          </motion.div>
+          <form className="flex flex-col sm:flex-row gap-3" onSubmit={(e) => { e.preventDefault(); setNewsletterEmail('') }}>
+            <input type="email" value={newsletterEmail} onChange={(e) => setNewsletterEmail(e.target.value)}
+              placeholder="your@email.com"
+              className="flex-1 px-5 py-4 text-sm text-white placeholder:text-white/30 bg-white/5 border border-white/10 rounded-sm focus:outline-none transition-colors"
+              style={{ borderColor: 'rgba(255,255,255,0.1)' }}
+              onFocus={(e) => e.currentTarget.style.borderColor = 'rgba(212,175,55,0.5)'}
+              onBlur={(e) => e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'}
+            />
+            <button type="submit" className="px-8 py-4 text-sm font-bold tracking-widest uppercase whitespace-nowrap transition-all duration-300 hover:scale-105"
+              style={{ background: 'linear-gradient(135deg, #4A1C2F, #6B2943)', border: '1px solid rgba(212,175,55,0.4)', color: '#D4AF37' }}>
+              Join the Circle
+            </button>
+          </form>
+          <p className="text-white/30 text-xs mt-4">No spam. Unsubscribe anytime. Pure luxury only.</p>
         </div>
       </section>
+
     </div>
   )
 }

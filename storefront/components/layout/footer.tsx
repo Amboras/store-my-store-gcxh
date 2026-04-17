@@ -2,7 +2,16 @@
 
 import Link from 'next/link'
 import Image from 'next/image'
-import { Instagram, Twitter, Play } from 'lucide-react'
+import { Instagram, Play } from 'lucide-react'
+
+// X (formerly Twitter) icon as lucide-react doesn't export it
+function XIcon({ className, strokeWidth }: { className?: string; strokeWidth?: number }) {
+  return (
+    <svg className={className} viewBox="0 0 24 24" fill="currentColor" stroke="none">
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-4.714-6.231-5.401 6.231H2.748l7.73-8.835L1.254 2.25H8.08l4.253 5.622zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  )
+}
 import { clearConsent } from '@/lib/cookie-consent'
 import { usePolicies } from '@/hooks/use-policies'
 
@@ -26,8 +35,8 @@ const footerLinks = {
 
 const socials = [
   { icon: Instagram, href: '#', label: 'Instagram', color: '#D4AF37' },
-  { icon: Twitter, href: '#', label: 'Twitter / X', color: '#00E5C0' },
-  { icon: Play, href: '#', label: 'YouTube', color: '#8B3A5A' },
+  { icon: XIcon, href: '#', label: 'X / Twitter', color: '#00E5C0' },
+  { icon: Play, href: '#', label: 'TikTok', color: '#8B3A5A' },
 ]
 
 export default function Footer() {
