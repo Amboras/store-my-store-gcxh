@@ -2,12 +2,15 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react'
 import Link from 'next/link'
-import { Search, ShoppingBag, User, Menu, X, LogIn, Sparkles } from 'lucide-react'
+import Image from 'next/image'
+import { Search, ShoppingBag, User, Menu, X, LogIn } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useCart } from '@/hooks/use-cart'
 import { useAuth } from '@/hooks/use-auth'
 import CartDrawer from '@/components/cart/cart-drawer'
 import { useCollections } from '@/hooks/use-collections'
+
+const LOGO_URL = 'https://fdkykcojwvimoabfaqjc.storage.supabase.co/storage/v1/object/public/product-user-files/default%2Fimage-2-01KPCFCBKXANQBG2WHER60MHYV.webp'
 
 const navLinks = [
   { label: 'All Rituals', href: '/products' },
@@ -90,22 +93,26 @@ export default function Header() {
             </button>
 
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2.5 group">
-              <div className="w-7 h-7 rounded-sm flex items-center justify-center flex-shrink-0 transition-all duration-300 group-hover:shadow-gold-sm"
+            <Link href="/" className="flex items-center group flex-shrink-0">
+              <motion.div
+                whileHover={{ scale: 1.04 }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
+                className="relative"
                 style={{
-                  background: 'linear-gradient(135deg, #D4AF37, #9A7E28)',
-                }}>
-                <Sparkles className="h-3.5 w-3.5 text-noir-black" />
-              </div>
-              <div className="flex flex-col leading-none">
-                <span className="font-heading text-lg font-black tracking-tight text-white">
-                  VELOUR
-                </span>
-                <span className="text-[9px] tracking-[0.3em] uppercase font-semibold -mt-0.5"
-                  style={{ color: '#D4AF37' }}>
-                  NOIRE
-                </span>
-              </div>
+                  filter: 'drop-shadow(0 0 12px rgba(212,175,55,0.35)) drop-shadow(0 0 4px rgba(0,229,192,0.15))',
+                }}
+              >
+                <Image
+                  src={LOGO_URL}
+                  alt="Velour Noire"
+                  width={110}
+                  height={52}
+                  className="object-contain"
+                  style={{ maxHeight: '52px', width: 'auto' }}
+                  priority
+                  unoptimized
+                />
+              </motion.div>
             </Link>
 
             {/* Desktop Navigation */}
@@ -212,12 +219,16 @@ export default function Header() {
               <div className="h-px w-full" style={{ background: 'linear-gradient(90deg, transparent, #D4AF37, transparent)' }} />
 
               <div className="flex items-center justify-between p-5 border-b border-white/5">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-6 h-6 rounded-sm flex items-center justify-center"
-                    style={{ background: 'linear-gradient(135deg, #D4AF37, #9A7E28)' }}>
-                    <Sparkles className="h-3 w-3 text-noir-black" />
-                  </div>
-                  <span className="font-heading text-base font-black text-white tracking-tight">VELOUR NOIRE</span>
+                <div className="flex items-center">
+                  <Image
+                    src={LOGO_URL}
+                    alt="Velour Noire"
+                    width={90}
+                    height={42}
+                    className="object-contain"
+                    style={{ maxHeight: '42px', width: 'auto', filter: 'drop-shadow(0 0 8px rgba(212,175,55,0.3))' }}
+                    unoptimized
+                  />
                 </div>
                 <button
                   ref={mobileMenuCloseRef}

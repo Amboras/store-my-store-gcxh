@@ -1,11 +1,14 @@
 'use client'
 
 import Link from 'next/link'
+import Image from 'next/image'
 import { useState, useEffect, useRef } from 'react'
 import { ArrowRight, Sparkles, Star, Zap, Shield, RefreshCw, Truck } from 'lucide-react'
 import { motion, useInView, useScroll, useTransform } from 'framer-motion'
 import CollectionSection from '@/components/marketing/collection-section'
 import { useCollections } from '@/hooks/use-collections'
+
+const LOGO_URL = 'https://fdkykcojwvimoabfaqjc.storage.supabase.co/storage/v1/object/public/product-user-files/default%2Fimage-2-01KPCFCBKXANQBG2WHER60MHYV.webp'
 
 // Floating particles component
 function Particles() {
@@ -312,128 +315,143 @@ export default function HomePage() {
               </motion.div>
             </div>
 
-            {/* Right — 3D Product Showcase */}
+            {/* Right — Cinematic Logo Showcase */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.85, rotateY: -20 }}
-              animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-              transition={{ duration: 1.2, delay: 0.3, ease: [0.23, 1, 0.32, 1] }}
+              initial={{ opacity: 0, scale: 0.85 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1.4, delay: 0.3, ease: [0.23, 1, 0.32, 1] }}
               style={{ y: heroY, opacity: heroOpacity }}
               className="relative flex items-center justify-center"
             >
-              {/* Outer glow ring */}
+              {/* Pulsing deep burgundy + cyan ambient glow behind logo */}
               <motion.div
-                className="absolute inset-0 rounded-full"
+                className="absolute rounded-full pointer-events-none"
                 style={{
-                  background: 'radial-gradient(ellipse, rgba(0,229,192,0.1) 0%, rgba(74,28,47,0.2) 50%, transparent 70%)',
+                  width: 520,
+                  height: 520,
+                  background: 'radial-gradient(ellipse, rgba(74,28,47,0.55) 0%, rgba(0,229,192,0.06) 50%, transparent 75%)',
+                  filter: 'blur(60px)',
                 }}
-                animate={{ scale: [1, 1.1, 1], opacity: [0.6, 1, 0.6] }}
-                transition={{ duration: 4, repeat: Infinity }}
+                animate={{ scale: [1, 1.12, 1], opacity: [0.7, 1, 0.7] }}
+                transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
               />
 
-              {/* Main product display */}
+              {/* Outer rotating ring ornament */}
               <motion.div
-                className="relative z-10 rounded-2xl overflow-hidden"
+                className="absolute rounded-full border pointer-events-none"
                 style={{
-                  width: 420,
-                  height: 520,
-                  background: 'linear-gradient(145deg, #1A1018 0%, #0F1714 50%, #161616 100%)',
-                  border: '1px solid rgba(212,175,55,0.2)',
-                  boxShadow: '0 30px 80px rgba(0,0,0,0.9), 0 0 60px rgba(0,229,192,0.1), 0 0 100px rgba(74,28,47,0.3)',
+                  width: 440,
+                  height: 440,
+                  borderColor: 'rgba(212,175,55,0.12)',
+                  borderStyle: 'solid',
+                  borderWidth: '1px',
                 }}
-                animate={{
-                  rotateY: [-3, 3, -3],
-                  rotateX: [2, -1, 2],
+                animate={{ rotate: 360 }}
+                transition={{ duration: 40, repeat: Infinity, ease: 'linear' }}
+              />
+
+              {/* Inner rotating ring */}
+              <motion.div
+                className="absolute rounded-full border pointer-events-none"
+                style={{
+                  width: 380,
+                  height: 380,
+                  borderColor: 'rgba(0,229,192,0.08)',
+                  borderStyle: 'dashed',
+                  borderWidth: '1px',
                 }}
-                transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut' }}
-              >
-                {/* Inner glow */}
-                <div className="absolute inset-0"
-                  style={{
-                    background: 'radial-gradient(ellipse at 30% 30%, rgba(0,229,192,0.06) 0%, transparent 60%)',
-                  }} />
+                animate={{ rotate: -360 }}
+                transition={{ duration: 28, repeat: Infinity, ease: 'linear' }}
+              />
 
-                {/* Top bar */}
-                <div className="relative z-10 p-6 border-b border-white/5 flex items-center justify-between">
-                  <span className="text-xs tracking-luxury text-gold-DEFAULT uppercase font-semibold">Velour Noire</span>
-                  <span className="text-xs text-cyan-neon tracking-wide">✦ Premium</span>
-                </div>
-
-                {/* Product visual */}
-                <div className="relative flex-1 flex flex-col items-center justify-center p-8 h-80">
-                  {/* 3D product emoji/icon */}
-                  <motion.div
-                    className="text-8xl mb-6"
-                    animate={{ y: [-8, 8, -8], rotateZ: [-2, 2, -2] }}
-                    transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-                  >
-                    💡
-                  </motion.div>
-
-                  {/* Radial glow under product */}
-                  <div className="absolute bottom-16 left-1/2 -translate-x-1/2 w-40 h-16 rounded-full"
-                    style={{
-                      background: 'radial-gradient(ellipse, rgba(0,229,192,0.3) 0%, transparent 70%)',
-                      filter: 'blur(20px)',
-                    }} />
-
-                  <h3 className="font-heading text-xl font-bold text-white text-center">LED Photon Mask</h3>
-                  <p className="text-cyan-neon text-sm mt-1 text-center">7-Color Light Therapy</p>
-                </div>
-
-                {/* Bottom price bar */}
-                <div className="absolute bottom-0 left-0 right-0 p-6 border-t border-white/5"
-                  style={{ background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(10px)' }}>
-                  <div className="flex items-center justify-between">
-                    <span className="text-2xl font-bold text-gold-DEFAULT font-heading">$189</span>
-                    <Link href="/products"
-                      className="text-xs px-4 py-2 rounded-sm font-semibold tracking-wide transition-all"
-                      style={{
-                        background: 'linear-gradient(135deg, #D4AF37, #9A7E28)',
-                        color: '#0A0A0A',
-                      }}>
-                      Shop Now
-                    </Link>
-                  </div>
-                </div>
-
-                {/* Scan line on card */}
+              {/* Gold corner accents */}
+              {[0, 90, 180, 270].map((angle) => (
                 <motion.div
-                  className="absolute left-0 right-0 h-px pointer-events-none"
-                  style={{ background: 'linear-gradient(90deg, transparent, rgba(0,229,192,0.4), transparent)' }}
-                  animate={{ top: ['5%', '95%'] }}
-                  transition={{ duration: 3, repeat: Infinity, ease: 'linear', repeatDelay: 1 }}
+                  key={angle}
+                  className="absolute pointer-events-none"
+                  style={{
+                    width: 12,
+                    height: 12,
+                    borderTop: '2px solid rgba(212,175,55,0.6)',
+                    borderLeft: '2px solid rgba(212,175,55,0.6)',
+                    transform: `rotate(${angle}deg) translate(180px, 0px)`,
+                    transformOrigin: 'center center',
+                  }}
+                />
+              ))}
+
+              {/* The Logo — cinematic, glowing, floating */}
+              <motion.div
+                className="relative z-10"
+                animate={{
+                  y: [-10, 10, -10],
+                  rotateZ: [-0.5, 0.5, -0.5],
+                }}
+                transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
+                style={{
+                  filter: 'drop-shadow(0 0 40px rgba(212,175,55,0.5)) drop-shadow(0 0 80px rgba(74,28,47,0.8)) drop-shadow(0 0 20px rgba(0,229,192,0.15))',
+                }}
+              >
+                <Image
+                  src={LOGO_URL}
+                  alt="Velour Noire"
+                  width={380}
+                  height={480}
+                  className="object-contain"
+                  style={{ maxHeight: '480px', width: 'auto' }}
+                  priority
+                  unoptimized
                 />
               </motion.div>
 
-              {/* Floating mini cards */}
+              {/* Floating product badge — EMS */}
               <motion.div
-                className="absolute -right-4 top-16 rounded-xl px-4 py-3 text-sm"
+                className="absolute -right-2 top-20 rounded-xl px-4 py-3"
                 style={{
-                  background: 'rgba(22,22,22,0.9)',
-                  border: '1px solid rgba(0,229,192,0.3)',
-                  backdropFilter: 'blur(10px)',
-                  boxShadow: '0 0 20px rgba(0,229,192,0.1)',
+                  background: 'rgba(10,10,10,0.92)',
+                  border: '1px solid rgba(0,229,192,0.35)',
+                  backdropFilter: 'blur(12px)',
+                  boxShadow: '0 0 25px rgba(0,229,192,0.12)',
                 }}
-                animate={{ x: [0, 6, 0], y: [0, -4, 0] }}
+                animate={{ x: [0, 8, 0], y: [0, -5, 0] }}
                 transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
               >
-                <div className="text-cyan-neon font-bold text-base">⚡ EMS</div>
-                <div className="text-white/60 text-xs mt-0.5">Jaw Sculpting</div>
+                <div className="text-cyan-neon font-bold text-sm">⚡ EMS Lift</div>
+                <div className="text-white/50 text-xs mt-0.5">Jaw Sculpting</div>
               </motion.div>
 
+              {/* Floating product badge — Gua Sha */}
               <motion.div
-                className="absolute -left-4 bottom-32 rounded-xl px-4 py-3 text-sm"
+                className="absolute -left-2 bottom-28 rounded-xl px-4 py-3"
                 style={{
-                  background: 'rgba(22,22,22,0.9)',
-                  border: '1px solid rgba(212,175,55,0.3)',
-                  backdropFilter: 'blur(10px)',
-                  boxShadow: '0 0 20px rgba(212,175,55,0.1)',
+                  background: 'rgba(10,10,10,0.92)',
+                  border: '1px solid rgba(212,175,55,0.35)',
+                  backdropFilter: 'blur(12px)',
+                  boxShadow: '0 0 25px rgba(212,175,55,0.12)',
                 }}
-                animate={{ x: [0, -6, 0], y: [0, 4, 0] }}
-                transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
+                animate={{ x: [0, -8, 0], y: [0, 5, 0] }}
+                transition={{ duration: 4.5, repeat: Infinity, ease: 'easeInOut', delay: 1 }}
               >
-                <div className="text-gold-DEFAULT font-bold text-base">🌸 Gua Sha</div>
-                <div className="text-white/60 text-xs mt-0.5">Velour Edition</div>
+                <div className="text-gold-DEFAULT font-bold text-sm">🌸 Gua Sha</div>
+                <div className="text-white/50 text-xs mt-0.5">Velour Edition</div>
+              </motion.div>
+
+              {/* Floating product badge — LED */}
+              <motion.div
+                className="absolute left-1/2 -translate-x-1/2 -bottom-4 rounded-xl px-5 py-3"
+                style={{
+                  background: 'rgba(10,10,10,0.92)',
+                  border: '1px solid rgba(139,58,90,0.4)',
+                  backdropFilter: 'blur(12px)',
+                  boxShadow: '0 0 25px rgba(139,58,90,0.15)',
+                }}
+                animate={{ y: [0, -6, 0] }}
+                transition={{ duration: 6, repeat: Infinity, ease: 'easeInOut', delay: 0.5 }}
+              >
+                <div className="text-center">
+                  <div className="font-bold text-sm" style={{ color: '#8B3A5A' }}>💡 LED Photon Mask</div>
+                  <div className="text-gold-DEFAULT text-xs font-bold mt-0.5">From R3,399</div>
+                </div>
               </motion.div>
             </motion.div>
           </div>

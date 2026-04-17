@@ -1,9 +1,12 @@
 'use client'
 
 import Link from 'next/link'
-import { Sparkles, Instagram, Twitter, Youtube, ArrowRight } from 'lucide-react'
+import Image from 'next/image'
+import { Instagram, Twitter, Play } from 'lucide-react'
 import { clearConsent } from '@/lib/cookie-consent'
 import { usePolicies } from '@/hooks/use-policies'
+
+const LOGO_URL = 'https://fdkykcojwvimoabfaqjc.storage.supabase.co/storage/v1/object/public/product-user-files/default%2Fimage-2-01KPCFCBKXANQBG2WHER60MHYV.webp'
 
 const footerLinks = {
   rituals: [
@@ -24,7 +27,7 @@ const footerLinks = {
 const socials = [
   { icon: Instagram, href: '#', label: 'Instagram', color: '#D4AF37' },
   { icon: Twitter, href: '#', label: 'Twitter / X', color: '#00E5C0' },
-  { icon: Youtube, href: '#', label: 'YouTube', color: '#8B3A5A' },
+  { icon: Play, href: '#', label: 'YouTube', color: '#8B3A5A' },
 ]
 
 export default function Footer() {
@@ -54,15 +57,20 @@ export default function Footer() {
         <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 lg:grid-cols-5">
           {/* Brand */}
           <div className="lg:col-span-2">
-            <Link href="/" className="inline-flex items-center gap-2.5 mb-6 group">
-              <div className="w-8 h-8 rounded-sm flex items-center justify-center flex-shrink-0"
-                style={{ background: 'linear-gradient(135deg, #D4AF37, #9A7E28)' }}>
-                <Sparkles className="h-4 w-4 text-noir-black" />
-              </div>
-              <div className="flex flex-col leading-none">
-                <span className="font-heading text-xl font-black tracking-tight text-white">VELOUR</span>
-                <span className="text-[9px] tracking-[0.35em] uppercase font-semibold -mt-0.5 text-gold-DEFAULT">NOIRE</span>
-              </div>
+            <Link href="/" className="inline-flex mb-6 group">
+              <Image
+                src={LOGO_URL}
+                alt="Velour Noire"
+                width={130}
+                height={62}
+                className="object-contain transition-all duration-300"
+                style={{
+                  maxHeight: '62px',
+                  width: 'auto',
+                  filter: 'drop-shadow(0 0 14px rgba(212,175,55,0.3)) drop-shadow(0 0 5px rgba(0,229,192,0.1))',
+                }}
+                unoptimized
+              />
             </Link>
 
             <p className="text-sm text-white/40 leading-relaxed max-w-xs mb-8">
